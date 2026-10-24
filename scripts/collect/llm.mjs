@@ -67,15 +67,31 @@ export function githubProvider(env = process.env) {
     async call({ system, user, maxTokens = 3000 }) {
       for (;;) {
         const model = models[idx];
-        const res = await postJSON(
-          'https://models.github.ai/inference/chat/completions',
-          { model, temperature: 0.2, max_tokens: Math.min(maxTokens, 3500), response_format: { type: 'json_object' }, messages: [{ role: 'system', content: system }, { role: 'user', content: user }] },
-          { Authorization: `Bearer ${env.GITHUB_TOKEN}`, Accept: 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28' },
-        );
+        // deux adresses équivalentes : la nouvelle (models.github.ai) puis l'ancienne (Azure, noms de modèles sans éditeur)
+        const endpoints = [
+          ['https://models.github.ai/inference/chat/completions', model],
+          ['https://models.inference.ai.azure.com/chat/completions', model.split('/').pop()],
+        ];
+        let res, content, why = '';
+        for (const [url, name] of endpoints) {
+          res = await postJSON(
+            url,
+            { model: name, temperature: 0.2, max_tokens: Math.min(maxTokens, 3500), response_format: { type: 'json_object' }, messages: [{ role: 'system', content: system }, { role: 'user', content: user }] },
+            { Authorization: `Bearer ${env.GITHUB_TOKEN}`, Accept: 'application/json', 'X-GitHub-Api-Version': '2022-11-28' },
+          );
+          if (!res.ok) break; // vraie erreur HTTP : traitée plus bas
+          try {
+            content = JSON.parse(res.text).choices?.[0]?.message?.content ?? '';
+            break;
+          } catch {
+            why = `${url.split('/')[2]} : réponse inattendue (HTTP ${res.status}, ${res.headers?.get?.('content-type') || '?'}) « ${res.text.slice(0, 60).replace(/\s+/g, ' ')} »`;
+            console.log('  [llm] ' + why);
+          }
+        }
         if (res.ok) {
-          const text = JSON.parse(res.text).choices?.[0]?.message?.content ?? '';
-          if (!text) throw new LLMError('réponse vide', { status: 200 });
-          return text;
+          if (content === undefined) throw new LLMError(why || 'réponse illisible', { status: 200 });
+          if (!content) throw new LLMError('réponse vide', { status: 200 });
+          return content;
         }
         if (isBadModel(res.status, res.text) && idx < models.length - 1) { idx++; continue; }
         throw new LLMError(`GitHub Models ${model} : HTTP ${res.status} ${res.text.slice(0, 200)}`, { status: res.status, retryAfter: retryAfter(res), daily: res.status === 429 && isDaily(res.text), model: isBadModel(res.status, res.text) });

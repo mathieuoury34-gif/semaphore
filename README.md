@@ -3,7 +3,7 @@
 Revue de presse personnelle, par secteur, entièrement en français **ou** entièrement en anglais (au choix). Deux éditions par jour (matin et soir), lisible sur téléphone et ordinateur, 0 € de coût.
 
 - **À la une** : le brief du jour (lecture de 2 minutes), puis 3 points par secteur.
-- **Secteurs** : le fil complet de chaque secteur (Politique, International, Europe, Économie, Climat & énergie, Science, IA & numérique, Espace, Aéro & défense, Veille métier, **Emploi**), tri « Importants » ou « Récents », recherche. *Emploi* ne contient que des offres d'emploi et de stage (le reste de l'actualité spatiale est dans *Espace*).
+- **Secteurs** : le fil complet de chaque secteur (Politique, International, Europe, Économie, Climat & énergie, Science, IA & numérique, Espace, Aéro & défense, Veille métier, **Sport**, **Emploi**), tri « Importants » ou « Récents », recherche. *Sport* couvre le football, le rugby, le tennis et les grands événements, avec une attention particulière au triathlon et au parkour (flux Google Actualités, faute de flux dédiés). *Emploi* ne contient que des offres d'emploi et de stage (le reste de l'actualité spatiale est dans *Espace*).
 - **Favoris** : les sujets mis de côté (gardés même quand ils sortent du fil, dans les deux langues) et des **mots suivis** (« Ariane 6 », « hydrogène »…).
 - **Réglages** (dans cet ordre) : Compte & synchronisation, Thème, **Langue**, Secteurs suivis, **Sources** (tous les journaux suivis, secteur par secteur, avec une case à cocher pour chacun), Résumé, Données.
 
@@ -115,7 +115,7 @@ Tout se règle dans `data-src/` (puis `git push`, ou « Run workflow » pour voi
 | `rules.json` | les mots-clés qui rattachent un article à un secteur (`strong` : terme décisif ; `any` : indice) |
 
 - **Tester une source** : `node scripts/collect/probe.mjs id-de-la-source` (sans argument : toutes).
-- **Ajouter une entreprise dans Emploi** : une ligne dans `sources.json` avec `"sectors": ["emploi"]`, `"type"` (`greenhouse`, `ashby`, `lever` ou `personio`), `"board"` (l'identifiant de l'entreprise dans l'adresse de sa page « Carrières », ex. `isaraerospace`) et `"company"`. Les mots qui décident si une offre est retenue (ingénieur, simulation, stage…) sont dans `rules.json` › `jobs` (et, pour une entreprise précise, `include` / `exclude` / `locations`).
+- **Ajouter une entreprise dans Emploi** : une ligne dans `sources.json` avec `"sectors": ["emploi"]`, `"type"` (`greenhouse`, `ashby`, `lever`, `personio`, `recruitee` ou `workday`), `"board"` (l'identifiant de l'entreprise dans l'adresse de sa page « Carrières », ex. `isaraerospace` ; pour Workday : `locataire/serveur/site`, ex. `ag/wd3/Airbus`, avec `"facets"` ou `"searchText"` pour ne garder que la bonne filiale) et `"company"`. Ajouter `"france": true` si l'entreprise a au moins un site en France : ses offres passent devant, et celles situées en France encore plus. Les mots qui décident si une offre est retenue (ingénieur, simulation, stage…) sont dans `rules.json` › `jobs` (et, pour une entreprise précise, `include` / `exclude` / `locations`).
 - **Ajouter un secteur** (ex. « Santé ») : une entrée dans `sectors.json`, des sources et des règles dans les deux autres fichiers, et une couleur `--sector-<id>` (clair et sombre) dans `src/styles/tokens.css` ; `python3 scripts/tools/contrast.py` vérifie le contraste.
 - **Changer la palette** : uniquement `src/styles/tokens.css`.
 

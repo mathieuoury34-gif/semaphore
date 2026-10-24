@@ -27,6 +27,7 @@ SECTORS = {
   'espace':        ('#00737D', '#00A1B1'),
   'aero':          ('#BD360F', '#F0673F'),
   'metier':        ('#6C6C00', '#979700'),
+  'sport':         ('#A63A3A', '#E66767'),
   'emploi':        ('#795548', '#BCAAA4'),
 }
 LIGHT = ('#FFFFFF', '#F5F6FA'); DARK = ('#171A2E', '#1E2238')

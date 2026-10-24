@@ -23,7 +23,7 @@ function compile(terms) {
 export function compileRules(rules) {
   const out = {};
   for (const [id, r] of Object.entries(rules.sectors || {})) {
-    out[id] = { strong: compile(r.strong || []), any: compile(r.any || []) };
+    out[id] = { strong: compile(r.strong || []), any: compile(r.any || []), exclude: compile(r.exclude || []) };
   }
   return out;
 }
@@ -38,6 +38,7 @@ export function matchSectors(compiled, title, snippet = '') {
   const bN = norm(bodyR);
   const res = [];
   for (const [id, r] of Object.entries(compiled)) {
+    if (r.exclude.some((m) => m.test(tN, tR) || m.test(bN, bodyR))) continue; // « exclude » : hors sujet pour ce secteur, même si un mot-clé correspond
     let score = 0;
     for (const m of r.strong) {
       if (m.test(tN, tR)) score += 3;
@@ -51,6 +52,14 @@ export function matchSectors(compiled, title, snippet = '') {
     if (strongTitle || score >= 3) res.push({ sector: id, score });
   }
   return res.sort((a, b) => b.score - a.score);
+}
+
+/** Le texte est-il explicitement hors sujet pour ce secteur ? (liste « exclude » de rules.json) */
+export function isExcluded(compiled, sector, title, snippet = '') {
+  const r = compiled[sector];
+  if (!r?.exclude.length) return false;
+  const body = snippet.slice(0, 600);
+  return r.exclude.some((m) => m.test(norm(title), title) || m.test(norm(body), body));
 }
 
 /**

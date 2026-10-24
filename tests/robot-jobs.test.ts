@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { jobFilter, jobsUrl, parseJobs } from '../scripts/collect/jobs.mjs';
+import { fetchWorkday, inFrance, jobFilter, jobsUrl, parseJobs } from '../scripts/collect/jobs.mjs';
 import { normalizeItems, parseFeed } from '../scripts/collect/feed.mjs';
 import { loadRules, loadSectors, loadSources } from '../scripts/collect/config.mjs';
 
@@ -90,5 +90,77 @@ test('diversité : chaque secteur d’opinion compte des sources de plusieurs se
     const left = sources.filter((s) => s.sectors.includes(sec) && ['left', 'center-left'].includes(s.lean)).length;
     const right = sources.filter((s) => s.sectors.includes(sec) && ['right', 'center-right'].includes(s.lean)).length;
     assert.ok(left >= 3 && right >= 3, `${sec} : équilibre gauche (${left}) / droite (${right})`);
+  }
+});
+
+test('Recruitee : offres publiées, lieu et pays, date au format « UTC »', () => {
+  const body = JSON.stringify({ offers: [
+    { title: 'Ingénieur propulsion (F/H)', careers_url: 'https://maia.recruitee.com/o/1', city: 'Vernon', country: 'France', country_code: 'FR', department: 'Moteurs', published_at: '2026-10-15 08:43:20 UTC', description: '<p>Essais moteur</p>', requirements: '<p>Bac+5</p>', status: 'published' },
+    { title: 'Offre fermée', careers_url: 'https://maia.recruitee.com/o/2', status: 'closed' },
+  ] });
+  const raw = parseJobs(body, { ...src, type: 'recruitee', board: 'maia', company: 'MaiaSpace' });
+  assert.equal(raw.length, 1);
+  assert.equal(raw[0].title, 'Ingénieur propulsion (F/H) — MaiaSpace · Vernon, France');
+  assert.equal(raw[0].date.toISOString(), '2026-10-15T08:43:20.000Z');
+  assert.equal(raw[0].meta.fr, true);
+  assert.throws(() => parseJobs('{"a":1}', { ...src, type: 'recruitee' }), /inattendue/);
+  assert.equal(jobsUrl('recruitee', 'maia'), 'https://maia.recruitee.com/api/offers/');
+});
+
+test('Workday : adresse, pages assemblées, dates relatives, lien public de l’offre', async () => {
+  assert.equal(jobsUrl('workday', 'ag/wd3/Airbus'), 'https://ag.wd3.myworkdayjobs.com/wday/cxs/ag/Airbus/jobs');
+  assert.throws(() => jobsUrl('workday', 'ag'), /locataire/);
+  const post = (n: number) => {
+    const calls: any[] = [];
+    const fn = async (_url: string, body: any) => {
+      calls.push(body);
+      const all = Array.from({ length: n }, (_, i) => ({ title: `Systems Engineer ${i}`, externalPath: `/job/Toulouse/Systems-Engineer_${i}`, locationsText: 'Toulouse Area', postedOn: i === 0 ? 'Posted Today' : i === 1 ? 'Posted Yesterday' : i === 2 ? 'Posted 5 Days Ago' : 'Posted 30+ Days Ago' }));
+      return { ok: true, status: 200, text: JSON.stringify({ total: n, jobPostings: all.slice(body.offset, body.offset + body.limit) }) };
+    };
+    return { fn, calls };
+  };
+  const { fn, calls } = post(45);
+  const wd = { ...src, type: 'workday', board: 'ag/wd3/Airbus', company: 'Airbus DS', facets: { hiringCompany: ['abc'] }, searchText: 'space' };
+  const body = await fetchWorkday(wd, fn as any);
+  assert.equal(calls.length, 3, 'trois pages de 20 pour 45 offres');
+  assert.deepEqual(calls[0], { appliedFacets: { hiringCompany: ['abc'] }, limit: 20, offset: 0, searchText: 'space' });
+  const now = new Date('2026-10-24T12:00:00Z');
+  const raw = parseJobs(body, wd, now);
+  assert.equal(raw.length, 45);
+  assert.equal(raw[0].url, 'https://ag.wd3.myworkdayjobs.com/Airbus/job/Toulouse/Systems-Engineer_0');
+  assert.equal(raw[0].date.toISOString(), now.toISOString());
+  assert.equal(raw[1].date.toISOString(), '2026-10-23T12:00:00.000Z');
+  assert.equal(raw[2].date.toISOString(), '2026-10-19T12:00:00.000Z');
+  assert.ok(raw[3].date.getTime() < now.getTime() - 40 * 86400000, '« 30+ jours » : écarté par la durée de conservation');
+  assert.equal(raw[0].meta.fr, true);
+  const failing = async () => ({ ok: false, status: 422, text: '' });
+  await assert.rejects(() => fetchWorkday(wd, failing as any), /HTTP 422/);
+  await assert.rejects(() => fetchWorkday(wd, (async () => ({ ok: true, status: 200, text: '<html>' })) as any), /inattendue/);
+});
+
+test('lieu en France : code pays si connu, sinon nom de lieu français', () => {
+  assert.equal(inFrance('Toulouse, Occitanie'), true);
+  assert.equal(inFrance('Les Mureaux'), true);
+  assert.equal(inFrance('Munich'), false);
+  assert.equal(inFrance('Venice, Italy'), false, 'pas de faux positif sur « Nice »');
+  assert.equal(inFrance('Delft', 'NL'), false);
+  assert.equal(inFrance('Remote', 'fr'), true);
+});
+
+test('offres : exclusion des fonctions support en français', () => {
+  const rules = (loadRules() as any).jobs;
+  const f = jobFilter(rules, {});
+  const mk = (title: string) => ({ title, meta: { title, location: '', department: '' } });
+  assert.equal(f(mk('Stage – Ingénieur propulsion (H/F)')), true);
+  assert.equal(f(mk('STAGE - RH - Support aux projets RH / HRBP (H/F)')), false);
+  assert.equal(f(mk('Stage en Sûreté et Protection du Secret (h/f)')), false);
+  assert.equal(f(mk('Junior Aerodynamics Engineer')), true);
+});
+
+test('configuration : les sources d’offres sont complètes (service connu, identifiant de l’entreprise)', () => {
+  for (const s of loadSources().filter((x: any) => x.type)) {
+    assert.ok(['greenhouse', 'ashby', 'lever', 'personio', 'recruitee', 'workday', 'arbeitnow'].includes(s.type), s.id);
+    assert.doesNotThrow(() => jobsUrl(s.type, s.board), s.id);
+    assert.deepEqual(s.sectors, ['emploi'], s.id);
   }
 });

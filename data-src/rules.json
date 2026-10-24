@@ -304,6 +304,24 @@
       ]
     },
     "climat": {
+      "_exclude": "Hors sujet pour ce secteur même si un mot-clé correspond : cryogénie et modélisation thermique relèvent de la Veille métier.",
+      "exclude": [
+        "re:cryo[a-z]*",
+        "re:thermo[a-z]*",
+        "thermal",
+        "thermique",
+        "thermiques",
+        "heat transfer",
+        "transfert thermique",
+        "transferts thermiques",
+        "cryostat",
+        "dewar",
+        "boil off",
+        "boiloff",
+        "cfd",
+        "computational fluid dynamics",
+        "dynamique des fluides numerique"
+      ],
       "strong": [
         "climat",
         "climatique",
@@ -650,11 +668,76 @@
         "president",
         "gouvernement"
       ]
+    },
+    "sport": {
+      "strong": [
+        "triathlon",
+        "triathlons",
+        "triathlete",
+        "triathletes",
+        "ironman",
+        "ironman 70.3",
+        "xterra",
+        "parkour",
+        "freerunning",
+        "free running",
+        "traceur",
+        "traceurs",
+        "jeux olympiques",
+        "olympic games",
+        "jeux paralympiques",
+        "coupe du monde de rugby",
+        "rugby world cup",
+        "six nations",
+        "tournoi des six nations",
+        "top 14",
+        "champions cup",
+        "ligue 1",
+        "ligue des champions",
+        "champions league",
+        "premier league",
+        "roland garros",
+        "roland-garros",
+        "wimbledon",
+        "us open de tennis",
+        "tour de france",
+        "coupe davis",
+        "ballon d or",
+        "euroleague"
+      ],
+      "any": [
+        "football",
+        "rugby",
+        "tennis",
+        "basket",
+        "handball",
+        "cyclisme",
+        "natation",
+        "athletisme",
+        "marathon",
+        "formule 1",
+        "grand prix",
+        "match",
+        "championnat",
+        "finale",
+        "victoire",
+        "defaite",
+        "entraineur",
+        "joueur",
+        "joueuse",
+        "sportif",
+        "sportive"
+      ],
+      "exclude": [
+        "fusee",
+        "satellite",
+        "exoplanete"
+      ]
     }
   },
   "_aide_jobs": "Offres d'emploi (sources avec « type » ou « jobs ») : « include » = au moins un de ces termes dans l'intitulé ou le service ; « exclude » = intitulés écartés. Chaque source peut avoir ses propres « include », « exclude » et « locations ».",
   "jobs": {
     "include": "engineer|ing[ée]nieur|scientist|physicist|physicien|researcher|chercheur|\\bcfd\\b|aerodynam|a[ée]roacoust|propulsion|thermal|thermodynam|fluid|simulation|combustion|cryogen|\\bgnc\\b|avionics|spacecraft|satellite|launch|rocket|\\bhpc\\b|numerical|model+ing|\\bintern\\b|internship|praktik|werkstudent|working student|thesis|abschlussarbeit|masterarbeit|master'?s? (student|intern|thesis)|\\bphd\\b|doctora|postdoc|\\bstage\\b|stagiaire|alternance|apprenti|trainee|graduate|junior",
-    "exclude": "\\b(sales|marketing|recruit\\w*|talent|accountant|accounting|legal|counsel|payroll|office manager|facility|facilities|customer success|account executive|business development|procurement|buyer|controller|paralegal|communications?|social media|content|designer|copywriter|hr|people partner|finance|financial)\\b"
+    "exclude": "\\b(sales|marketing|recruit\\w*|talent|accountant|accounting|legal|counsel|payroll|office manager|facility|facilities|customer success|account executive|business development|procurement|buyer|controller|paralegal|communications?|social media|content|designer|copywriter|hr|hrbp|rh|ressources humaines|people partner|finance|financial|comptab\\w*|paie|juridique|juriste|acheteur|achats|commercial\\w*|hse|s[ûu]ret|strat[ée]gi\\w*|strategy|assistant(?:e)? (?:de )?direction)\\b"
   }
 }

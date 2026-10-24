@@ -106,3 +106,6 @@ details.more[open] summary svg { transform: rotate(180deg); }
 .source-row .status-dot { margin-top: 7px; }
 .spread { padding: var(--space-12); border-radius: var(--radius-12); background: var(--bg-surface-minimal); }
 .chip:disabled { opacity: .45; cursor: default; }
+
+.sync-line { align-items: flex-start; gap: var(--space-8); font: var(--type-body); }
+.sync-line svg { margin-top: 2px; }

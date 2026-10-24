@@ -35,7 +35,8 @@ const jobs = [
 jobs.forEach(([title, sid], i) => {
   const src = sources.find((s) => s.id === sid);
   stories.push({ id: 'job' + i, title, lang: src.lang, sectors: ['emploi'], date: ago(20 + i * 30), first: ago(20 + i * 30), score: 2, votes: 1, rel: 0,
-    tx: { [src.lang]: { t: title, n: 'Missions : modélisation numérique, essais, interface avec les équipes de conception. Profil : ingénieur ou doctorant, stage possible.', u: `https://demo.test/job${i}`, x: sid } },
+    tx: { [src.lang]: { t: title, n: 'Missions : modélisation numérique, essais, interface avec les équipes de conception. Profil : ingénieur ou doctorant, stage possible.', u: `https://demo.test/job${i}`, x: sid },
+      [src.lang === 'en' ? 'fr' : 'en']: { t: title, tr: 1, s: 'Offre de démonstration : modélisation numérique, essais et interface avec les équipes de conception.', by: 'llm', u: `https://demo.test/job${i}`, x: sid } },
     items: [{ u: `https://demo.test/job${i}`, t: title, s: sid, d: ago(20 + i * 30), l: src.lang }] });
 });
 const visible = (L) => stories.filter((s) => s.tx[L]);

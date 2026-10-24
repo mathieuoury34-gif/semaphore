@@ -3,6 +3,7 @@
   "short_name": "Vigie",
   "description": "Revue de presse personnelle par secteur, résumée en français, deux éditions par jour.",
   "lang": "fr",
+  "id": "./",
   "start_url": "./#/une",
   "scope": "./",
   "display": "standalone",

@@ -108,7 +108,8 @@ export function normalizeItems(raw, source, now = new Date()) {
   const maxFuture = now.getTime() + 2 * 3600 * 1000;
   for (const r of raw) {
     const url = canonicalUrl(decodeEntities(r.url));
-    const title = clip(r.title.replace(/\s+/g, ' ').replace(/ \(arXiv:[^)]*\)\s*$/i, ''), 220);
+    let title = clip(r.title.replace(/\s+/g, ' ').replace(/ \(arXiv:[^)]*\)\s*$/i, ''), 220);
+    if (source.gnews) title = title.replace(/\s+-\s+[^-]{2,60}$/, ''); // Google Actualités : « Titre - Journal »
     if (!url || !title || title.length < 8 || seen.has(url)) continue;
     if (source.skipAnnounce && r.announce && source.skipAnnounce.includes(r.announce)) continue;
     seen.add(url);
@@ -118,10 +119,11 @@ export function normalizeItems(raw, source, now = new Date()) {
       url,
       title,
       date: date.toISOString(),
-      snippet: clip(r.snippet, 400),
-      text: r.text.length > r.snippet.length + 200 ? clip(r.text, 6000) : '',
+      snippet: source.gnews ? '' : clip(r.snippet, 400), // Google Actualités : le résumé du flux ne répète que le titre
+      text: !source.gnews && r.text.length > r.snippet.length + 200 ? clip(r.text, 6000) : '',
       categories: r.categories.slice(0, 6),
       sourceId: source.id,
+      ...(r.meta?.fr ? { fr: true } : {}),
       lang: source.lang || 'fr',
       ...(source.type || source.jobs || source.noCluster ? { noCluster: true } : {}),
     });

@@ -6,9 +6,9 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { getText } from './http.mjs';
 import { normalizeItems, parseFeed } from './feed.mjs';
-import { compileRules, sectorsFor } from './classify.mjs';
+import { compileRules, isExcluded, sectorsFor } from './classify.mjs';
 import { attach, mergeAcrossLanguages, refreshLead } from './cluster.mjs';
-import { jobFilter } from './jobs.mjs';
+import { fetchWorkday, jobFilter } from './jobs.mjs';
 import { loadRules, loadSectors, loadSources } from './config.mjs';
 import { LANGS, anySummaryTx, capPerSector, hasSummary, migrateStory, pickLead, publicStory, refreshTx } from './stories.mjs';
 import { rankStories, bySector } from './rank.mjs';
@@ -72,6 +72,15 @@ async function loadPrev() {
 
 const prev = await loadPrev();
 let stories = Array.isArray(prev.feed?.stories) && (prev.feed.v === SCHEMA || prev.feed.v === 1) ? prev.feed.stories.map(migrateStory) : [];
+// règles « exclude » : un sujet déjà publié perd son secteur secondaire devenu hors sujet (ex. cryogénie dans Climat & énergie)
+for (const st of stories) {
+  const text = st.tx ? Object.values(st.tx).map((x) => x?.n || '').join(' ') : '';
+  const keep = st.sectors.filter((sec, i) => i === 0 || !isExcluded(rules, sec, st.title, text));
+  if (keep.length !== st.sectors.length) {
+    for (const sec of st.sectors) if (!keep.includes(sec) && st.votes) delete st.votes[sec];
+    st.sectors = keep;
+  }
+}
 const prevStatus = new Map((prev.status?.sources ?? []).map((s) => [s.id, s]));
 log(`Vigie – collecte du ${now.toISOString()}  (${stories.length} sujets déjà connus, ${sources.length} sources actives)`);
 
@@ -92,7 +101,10 @@ async function readSource(s) {
   const row = { id: s.id, name: s.name, ok: false, items: 0, new: 0, ms: 0, lastOk: before.lastOk ?? null, etag: before.etag, lastModified: before.lastModified };
   const t = Date.now();
   try {
-    let r = await getText(s.url, { timeout: 20000, etag: before.etag, lastModified: before.lastModified, maxBytes: s.type || s.jobs ? 12_000_000 : undefined });
+    const load = (extra = {}) => (s.type === 'workday'
+      ? fetchWorkday(s).then((text) => ({ status: 200, text }))
+      : getText(s.url, { timeout: 20000, etag: before.etag, lastModified: before.lastModified, maxBytes: s.type || s.jobs ? 12_000_000 : undefined, ...extra }));
+    let r = await load();
     if (r.notModified) {
       row.ok = true; row.lastOk = now.toISOString(); row.note = 'inchangé';
       return row;
@@ -102,6 +114,7 @@ async function readSource(s) {
       parsed = parseFeed(r.text, s);
     } catch (e) {
       // page d'attente ou refus déguisé en 200 : nouvel essai avec une identité de navigateur
+      if (s.type === 'workday') throw e;
       r = await getText(s.url, { timeout: 20000, keepUA: true, headers: { 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36' } });
       parsed = parseFeed(r.text, s);
     }
@@ -114,6 +127,8 @@ async function readSource(s) {
     for (const it of items) {
       const cl = sectorsFor(it, s, rules);
       it.sectors = cl.sectors; it.rel = cl.rel;
+      // offres : celles situées en France passent devant, puis celles d'entreprises qui ont un site en France, puis les autres
+      if (s.type || s.jobs) it.rel = it.fr ? 1 : s.france ? 0.7 : 0.3;
       if (!it.sectors.length) continue;
       raw.set(it.url, { snippet: it.snippet, text: it.text });
       if (!isKnown(it.url)) { newItems.push(it); remember(it.url); row.new++; }
@@ -161,7 +176,7 @@ await pool(candidates, 6, async (st) => {
   const lead = pickLead(st.items, sourceMap);
   const r = raw.get(lead.u);
   let text = r?.text && r.text.length >= 500 ? r.text : '';
-  if (!text && FETCH_ARTICLES && !sourceMap.get(lead.s)?.type) {
+  if (!text && FETCH_ARTICLES && !sourceMap.get(lead.s)?.type && !sourceMap.get(lead.s)?.gnews) {
     try {
       const a = await fetchArticle(lead.u);
       text = a.text.length >= 300 ? a.text : '';

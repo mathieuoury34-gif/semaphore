@@ -7,7 +7,7 @@ import { loadStatus, useFeed } from '../data/feed';
 import { resetRead, setFollowed, setLang, setSectorOff, useUserState } from '../data/store';
 import { signIn, signOut, syncNow, useSync } from '../data/sync';
 import { onThemeChange, setThemePref, themePref, type ThemePref } from '../theme';
-import { dateTime, relTime } from '../domain/format';
+import { dateNumeric, dateTime } from '../domain/format';
 import { LEANS, type Lang, type Sector, type SourceInfo, type Status } from '../domain/types';
 import { followedSectors, leanSpread, sourcesOfSector } from '../domain/select';
 import { useT, type Key } from '../i18n';
@@ -42,8 +42,9 @@ function Account() {
             {sync.user.photo && <img src={sync.user.photo} alt="" width={40} height={40} style={{ borderRadius: '50%' }} referrerPolicy="no-referrer" />}
             <div className="grow stack-4"><span className="t-strong">{sync.user.name || t('account.google')}</span><span className="t-caption c-moderate ellipsis">{sync.user.email}</span></div>
           </div>
-          <p className={'t-caption ' + (sync.state === 'error' ? 'c-critical' : 'c-moderate')} role="status">
-            {sync.state === 'syncing' ? t('account.syncing') : sync.state === 'error' ? sync.error : sync.lastSync ? t('account.synced', { when: relTime(sync.lastSync, lang) }) : t('account.connected')}
+          <p className={'row sync-line ' + (sync.state === 'error' ? 'c-critical' : sync.state === 'syncing' || !sync.lastSync ? 'c-moderate' : 'c-success')} role="status">
+            <Icon name={sync.state === 'error' ? 'alert' : sync.state === 'syncing' || !sync.lastSync ? 'refresh' : 'success'} size={20} />
+            <span>{sync.state === 'syncing' ? t('account.syncing') : sync.state === 'error' ? sync.error : sync.lastSync ? t('account.syncedAt', dateNumeric(sync.lastSync, lang)) : t('account.connected')}</span>
           </p>
           <div className="grid-2 btns">
             <button type="button" className="btn btn-secondary" onClick={() => void syncNow()}><Icon name="refresh" size={18} />{t('account.sync')}</button>

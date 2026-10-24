@@ -56,3 +56,13 @@ test('arXiv : préfixe retiré, version et catégorie ôtées du titre, « repla
 test('flux invalide', () => {
   assert.throws(() => parseFeed('<html><body>Just a moment...</body></html>', {}), /non reconnu/);
 });
+
+test('Google Actualités : le nom du journal est retiré du titre, pas de résumé (il répète le titre)', () => {
+  const rss = `<?xml version="1.0"?><rss version="2.0"><channel><item><title>Pourquoi le parkour suscite un tel engouement à Bayonne - 20 Minutes</title><link>https://news.google.com/rss/articles/CBMi123</link><pubDate>Fri, 23 Oct 2026 10:00:00 GMT</pubDate><description>&lt;a href="x"&gt;Pourquoi le parkour suscite un tel engouement à Bayonne&lt;/a&gt; 20 Minutes</description></item></channel></rss>`;
+  const src = { id: 'g', lang: 'fr', gnews: true };
+  const [it] = normalizeItems(parseFeed(rss, src), src);
+  assert.equal(it.title, 'Pourquoi le parkour suscite un tel engouement à Bayonne');
+  assert.equal(it.snippet, '');
+  const [plain] = normalizeItems(parseFeed(rss, { id: 'p' }), { id: 'p', lang: 'fr' });
+  assert.match(plain.title, /20 Minutes$/);
+});

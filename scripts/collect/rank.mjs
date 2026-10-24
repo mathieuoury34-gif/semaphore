@@ -1,7 +1,7 @@
 // Classement des sujets : fraîcheur, poids des sources, nombre de sources distinctes qui en parlent.
 export function scoreStory(st, sources, now = Date.now()) {
   const ageH = Math.max(0, (now - Date.parse(st.date)) / 3600000);
-  const fresh = Math.exp(-ageH / 30); // demi-vie ≈ 21 h
+  const fresh = Math.exp(-ageH / (st.sectors?.[0] === 'emploi' ? 240 : 30)); // demi-vie ≈ 21 h ; une offre d'emploi reste valable des semaines (≈ 7 jours)
   const ws = st.items.map((i) => (sources.get(i.s)?.weight ?? 1) + (sources.get(i.s)?.kind === 'institution' ? 0.5 : 0));
   const distinct = new Set(st.items.map((i) => i.s)).size;
   const base = Math.max(...ws);

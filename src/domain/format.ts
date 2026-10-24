@@ -40,6 +40,14 @@ export function dateTime(iso: string, lang: Lang = 'fr'): string {
   return lang === 'en' ? `${day} at ${fmt(lang, 'time').format(d)}` : `${day} à ${fmt(lang, 'time').format(d).replace(':', ' h ')}`;
 }
 
+/** « 24/10/2026 à 20:48 » / « 24/10/2026 at 20:48 » (date numérique, comme dans PEAnalyze). */
+export function dateNumeric(iso: string, lang: Lang = 'fr'): { date: string; time: string } {
+  const d = new Date(iso);
+  const date = new Intl.DateTimeFormat(LOCALE[lang], { day: '2-digit', month: '2-digit', year: 'numeric' }).format(d);
+  const time = new Intl.DateTimeFormat(LOCALE[lang], { hour: '2-digit', minute: '2-digit', hour12: false }).format(d);
+  return { date, time };
+}
+
 /** Édition du jour, d'après l'heure de génération (heure locale) : matin avant 14 h, sinon soir. */
 export function edition(iso: string): 'morning' | 'evening' {
   return new Date(iso).getHours() < 14 ? 'morning' : 'evening';

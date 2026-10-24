@@ -63,3 +63,14 @@ test('rankStories : plusieurs sources et institution > source seule ; la fraîch
   assert.ok(a.score > b.score);
   assert.ok(a.score > c.score, 'un vieux sujet passe derrière un sujet frais');
 });
+
+test('rankStories : une offre d’emploi de 5 jours compte encore ; en France elle passe devant', () => {
+  const now = Date.parse('2026-10-24T12:00:00Z');
+  const fr: any = { id: 'j1', sectors: ['emploi'], date: '2026-10-19T12:00:00Z', items: [{ s: 'bfm' }], rel: 1 };
+  const other: any = { id: 'j2', sectors: ['emploi'], date: '2026-10-19T12:00:00Z', items: [{ s: 'bfm' }], rel: 0.3 };
+  const news: any = { id: 'n1', sectors: ['politique'], date: '2026-10-19T12:00:00Z', items: [{ s: 'bfm' }], rel: 1 };
+  rankStories([fr, other, news], sources, now);
+  assert.ok(fr.score > other.score);
+  assert.ok(fr.score > 0.3, 'une offre de 5 jours garde un score utilisable');
+  assert.ok(news.score < 0.1, 'une actualité de 5 jours est devenue sans intérêt');
+});

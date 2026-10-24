@@ -19,7 +19,9 @@
     "en": { "name": "Aero & defence", "short": "Aero", "description": "Aviation, aerospace industry, drones, air defence." } },
   { "id": "metier",        "name": "Veille métier",    "short": "Métier",     "icon": "wrench",   "description": "Mécanique des fluides, aéroacoustique, propulsion, cryogénie, simulation numérique.", "summaries": 10,
     "en": { "name": "Field watch", "short": "Field", "description": "Fluid mechanics, aeroacoustics, propulsion, cryogenics, numerical simulation." } },
-  { "id": "emploi",        "name": "Emploi",           "short": "Emploi",     "icon": "briefcase", "description": "Offres d'emploi et de stage : spatial, aéronautique, simulation, recherche (Munich, France, Europe).", "summaries": 10,
+  { "id": "sport",        "name": "Sport",            "short": "Sport",      "icon": "trophy",   "description": "Football, rugby, tennis, triathlon, parkour et grands événements sportifs.", "summaries": 10,
+    "en": { "name": "Sport", "short": "Sport", "description": "Football, rugby, tennis, triathlon, parkour and major sporting events." } },
+  { "id": "emploi",        "name": "Emploi",           "short": "Emploi",     "icon": "briefcase", "description": "Offres d'emploi et de stage : spatial, aéronautique, simulation, recherche (Munich, France, Europe).", "summaries": 30,
     "retentionDays": 30, "freshHours": 720,
     "en": { "name": "Jobs", "short": "Jobs", "description": "Job and internship openings: space, aerospace, simulation, research (Munich, France, Europe)." } }
 ]
