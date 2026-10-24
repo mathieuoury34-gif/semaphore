@@ -1,4 +1,4 @@
-/* Vigie – styles des composants (même ergonomie que PEAnalyze, uniquement via les tokens) */
+/* Sémaphore – styles des composants (même ergonomie que PEAnalyze, uniquement via les tokens) */
 
 :root {
   /* zones sûres réelles de l'appareil (les maquettes utilisaient celles d'un iPhone) */
@@ -73,7 +73,8 @@ ul { list-style: none; margin: 0; padding: 0; }
 .t-legal { font: var(--type-legal); }
 .t-chip { font: var(--type-chip); }
 .t-button { font: var(--type-button); }
-.overline { font: var(--type-overline); letter-spacing: var(--overline-tracking); text-transform: uppercase; }
+.overline { font: var(--type-overline); }
+.t-display, .t-h1, .t-h2, .t-h3, .app-header h1, .sub-header h1, .card h2 { letter-spacing: -0.01em; }
 .c-moderate { color: var(--text-moderate); }
 .c-neutral { color: var(--text-neutral); }
 .c-primary { color: var(--primary-fg); }
@@ -88,6 +89,8 @@ ul { list-style: none; margin: 0; padding: 0; }
 .app-header .bar { height: var(--header-height); display: flex; align-items: center; justify-content: space-between; gap: var(--space-8); }
 .app-header h1 { font: var(--type-h2); color: var(--text); }
 .app-header .updated { font: var(--type-caption); color: var(--text-moderate); }
+.app-header .header-mark { display: flex; flex-shrink: 0; color: var(--brand-primary); margin-right: var(--space-10); }
+.app-header.compact .header-mark { display: none; }
 .app-header .titles { display: flex; flex-direction: column; min-width: 0; }
 .app-header .actions { display: flex; align-items: center; margin-left: auto; position: relative; z-index: 1; transition: transform .18s ease-out; }
 .app-header.compact .titles { position: absolute; left: 0; right: 0; top: calc(var(--safe-top) + var(--header-height) - 44px); height: 44px; justify-content: center; align-items: center; text-align: center; pointer-events: none; }
@@ -113,7 +116,7 @@ ul { list-style: none; margin: 0; padding: 0; }
 .tabbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 6; margin: 0 auto; max-width: var(--content-max); background: var(--bg-surface); box-shadow: var(--shadow-sticky); padding: 0 var(--space-8) var(--safe-bottom); display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
 .tabbar a { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-2); height: var(--tabbar-height); text-decoration: none; font: var(--type-tab); color: var(--text-moderate); }
 .tabbar a .pill { display: flex; align-items: center; justify-content: center; width: 56px; height: 32px; border-radius: var(--radius-full); }
-.tabbar a[aria-current="page"] { color: var(--primary-fg); box-shadow: inset 0 var(--tab-indicator-height) 0 var(--brand-primary); }
+.tabbar a[aria-current="page"] { font-weight: var(--fw-700); color: var(--primary-fg); box-shadow: inset 0 var(--tab-indicator-height) 0 var(--brand-primary); }
 .tabbar a[aria-current="page"] .pill { background: var(--bg-highlight); }
 .sidenav { display: none; }
 
@@ -235,9 +238,9 @@ select.input { appearance: auto; }
 .empty { flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-12); padding: var(--space-32); text-align: center; }
 .empty .empty-icon { width: 88px; height: 88px; border-radius: var(--radius-full); background: var(--bg-brand-minimal); color: var(--primary-fg); display: flex; align-items: center; justify-content: center; }
 
-/* logotype */
-.logo { display: inline-flex; align-items: center; gap: 0.45em; font-family: var(--font-heading); font-weight: var(--fw-700); }
-.logo-mark { display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; background: var(--brand-primary); }
+/* logotype : pictogramme (currentColor, lanterne et faisceau en corail) + nom */
+.logo { display: inline-flex; align-items: center; gap: 0.45em; font-family: var(--font-heading); font-weight: var(--fw-700); letter-spacing: -0.01em; }
+.logo-mark { display: inline-flex; align-items: center; justify-content: center; color: var(--brand-primary); }
 
 /* tableau */
 
@@ -256,6 +259,7 @@ select.input { appearance: auto; }
   .mobile-only { display: none !important; }
   .desktop-only { display: initial; }
   .tabbar { display: none; }
+  .app-header .header-mark { display: none; }
   .sidenav { display: flex; flex-direction: column; gap: var(--space-24); position: fixed; left: 0; top: 0; bottom: 0; width: var(--sidenav-width); z-index: 6; padding: var(--space-24) var(--space-16); background: var(--bg-surface); box-shadow: 1px 0 0 var(--divider-minimal); }
   .sidenav .logo { padding: 0 var(--space-8); }
   .sidenav nav { display: flex; flex-direction: column; gap: var(--space-4); }

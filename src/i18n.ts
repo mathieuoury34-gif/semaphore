@@ -36,9 +36,9 @@ const FR = {
   'sector.markAll': 'Tout marquer comme lu', 'sector.hidden': 'Certaines sources sont masquées dans ce secteur (Réglages › Sources).',
   'sector.fewLang': "Peu de sujets dans cette langue pour l'instant : l'IA n'a pas traduit les autres sujets (Réglages › Résumé).",
   // ---- Favoris
-  'favs.title': 'Favoris', 'kw.title': 'Mots suivis', 'kw.help': 'Un nom, une entreprise, un sujet : tous les sujets du flux qui le contiennent sont listés ici, tous secteurs confondus.',
+  'favs.title': 'Favoris', 'kw.title': 'Mots suivis', 'kw.help': 'Un nom, une entreprise, un sujet : tapez-le puis touchez « + ». Tous les sujets du flux qui le contiennent sont listés ici, tous secteurs confondus.',
   'kw.placeholder': 'ex. Ariane 6, hydrogène, stage', 'kw.aria': 'Nouveau mot suivi', 'kw.add': 'Ajouter le mot', 'kw.drop': 'Ne plus suivre « {k} »',
-  'kw.already': 'Déjà suivi', 'kw.max': '30 mots suivis au maximum', 'kw.count': ['{n} sujet correspond', '{n} sujets correspondent'], 'kw.none': 'Aucun sujet pour le moment',
+  'kw.already': 'Déjà suivi', 'kw.empty': 'Tapez d’abord un mot à suivre, puis touchez « + »', 'kw.added': '« {k} » est maintenant suivi', 'kw.max': '30 mots suivis au maximum', 'kw.count': ['{n} sujet correspond', '{n} sujets correspondent'], 'kw.none': 'Aucun sujet pour le moment',
   'favs.saved': 'Mis de côté', 'favs.search': 'Chercher dans mes favoris', 'favs.searchAria': 'Chercher dans les favoris',
   'favs.emptyTitle': 'Aucun favori', 'favs.emptyText': "Touchez l'étoile d'un sujet pour le garder ici, même quand il aura disparu du flux.", 'favs.noMatch': 'Aucun favori ne correspond.',
   'fav.add': 'Mettre en favori', 'fav.remove': 'Retirer des favoris', 'fav.added': 'Ajouté aux favoris', 'fav.removed': 'Retiré des favoris',
@@ -81,7 +81,8 @@ const FR = {
   'sum.last': 'Dernière édition — résumés IA : {llm} · extraits : {ext}.', 'sum.model': ' Modèle : {m}.',
   'data.line': '{read} sujets lus mémorisés (14 jours) · {n} sujets en ligne{ed}', 'data.edition': " · édition du {date}",
   'data.resetRead': 'Tout marquer non lu', 'data.reload': "Recharger l'application", 'data.resetDone': 'Lectures réinitialisées',
-  'footer': "Vigie · usage personnel · les titres et extraits appartiennent à leurs éditeurs.",
+  'app.name': 'Sémaphore',
+  'footer': "Sémaphore · usage personnel · les titres et extraits appartiennent à leurs éditeurs.",
 } as const;
 
 const EN: Record<keyof typeof FR, Val> = {
@@ -110,9 +111,9 @@ const EN: Record<keyof typeof FR, Val> = {
   'sector.empty': 'Nothing here', 'sector.emptyText': 'No story matches.', 'sector.allRead': 'All read', 'sector.allReadText': 'No unread story in this sector.',
   'sector.markAll': 'Mark all as read', 'sector.hidden': 'Some sources are hidden in this sector (Settings › Sources).',
   'sector.fewLang': "Few stories in this language for now: the AI has not translated the other stories (Settings › Summary).",
-  'favs.title': 'Saved', 'kw.title': 'Followed keywords', 'kw.help': 'A name, a company, a topic: every story containing it is listed here, across all sectors.',
+  'favs.title': 'Saved', 'kw.title': 'Followed keywords', 'kw.help': 'A name, a company, a topic: type it, then tap “+”. Every story containing it is listed here, across all sectors.',
   'kw.placeholder': 'e.g. Ariane 6, hydrogen, internship', 'kw.aria': 'New keyword', 'kw.add': 'Add keyword', 'kw.drop': 'Stop following "{k}"',
-  'kw.already': 'Already followed', 'kw.max': '30 keywords maximum', 'kw.count': ['{n} story matches', '{n} stories match'], 'kw.none': 'No story for now',
+  'kw.already': 'Already followed', 'kw.empty': 'Type a keyword first, then tap “+”', 'kw.added': '“{k}” is now followed', 'kw.max': '30 keywords maximum', 'kw.count': ['{n} story matches', '{n} stories match'], 'kw.none': 'No story for now',
   'favs.saved': 'Saved stories', 'favs.search': 'Search my saved stories', 'favs.searchAria': 'Search saved stories',
   'favs.emptyTitle': 'Nothing saved', 'favs.emptyText': "Tap a story's star to keep it here, even after it has left the feed.", 'favs.noMatch': 'No saved story matches.',
   'fav.add': 'Save', 'fav.remove': 'Remove from saved', 'fav.added': 'Saved', 'fav.removed': 'Removed from saved',
@@ -152,7 +153,8 @@ const EN: Record<keyof typeof FR, Val> = {
   'sum.last': 'Latest edition — AI summaries: {llm} · excerpts: {ext}.', 'sum.model': ' Model: {m}.',
   'data.line': '{read} read stories remembered (14 days) · {n} stories online{ed}', 'data.edition': ' · edition of {date}',
   'data.resetRead': 'Mark all unread', 'data.reload': 'Reload the app', 'data.resetDone': 'Reading marks reset',
-  'footer': 'Vigie · personal use · headlines and excerpts belong to their publishers.',
+  'app.name': 'Semaphore',
+  'footer': 'Semaphore · personal use · headlines and excerpts belong to their publishers.',
 };
 
 export type Key = keyof typeof FR;

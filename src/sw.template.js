@@ -1,15 +1,15 @@
-// Service worker de Vigie : l'application et la dernière édition fonctionnent hors ligne.
+// Service worker de Sémaphore : l'application et la dernière édition fonctionnent hors ligne.
 const VERSION = '__VERSION__';
-const SHELL = 'vigie-shell-' + VERSION;
-const RUNTIME = 'vigie-runtime';
-const DATA = 'vigie-data';
+const SHELL = 'semaphore-shell-' + VERSION;
+const RUNTIME = 'semaphore-runtime';
+const DATA = 'semaphore-data';
 const FILES = __FILES__;
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(SHELL).then((c) => c.addAll(FILES)).then(() => self.skipWaiting()));
 });
 self.addEventListener('activate', (e) => {
-  e.waitUntil(caches.keys().then((keys) => Promise.all(keys.filter((k) => k.startsWith('vigie-shell-') && k !== SHELL).map((k) => caches.delete(k)))).then(() => self.clients.claim()));
+  e.waitUntil(caches.keys().then((keys) => Promise.all(keys.filter((k) => (k.startsWith('semaphore-shell-') || k.startsWith('vigie-')) && k !== SHELL).map((k) => caches.delete(k)))).then(() => self.clients.claim()));
 });
 self.addEventListener('fetch', (e) => {
   const req = e.request;

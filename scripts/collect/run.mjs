@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Robot de collecte de Vigie : lit les flux, regroupe par sujet, classe par secteur, résume, écrit public/data/*.json.
+// Robot de collecte de Sémaphore : lit les flux, regroupe par sujet, classe par secteur, résume, écrit public/data/*.json.
 //   node scripts/collect/run.mjs [--out public/data] [--prev-dir <dossier> | --prev-url <https://…/data/>]
 //        [--only id,id] [--no-articles] [--no-llm] [--max-summaries 140] [--dry]
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
@@ -82,7 +82,7 @@ for (const st of stories) {
   }
 }
 const prevStatus = new Map((prev.status?.sources ?? []).map((s) => [s.id, s]));
-log(`Vigie – collecte du ${now.toISOString()}  (${stories.length} sujets déjà connus, ${sources.length} sources actives)`);
+log(`Sémaphore – collecte du ${now.toISOString()}  (${stories.length} sujets déjà connus, ${sources.length} sources actives)`);
 
 // ------------------------------------------------------------------ lecture des flux
 // mémoire des articles déjà vus (même ceux dont le sujet a été écarté) : évite de les réintroduire au passage suivant

@@ -1,4 +1,4 @@
-// Icônes Lucide (trait 2 px), mêmes conventions que PEAnalyze + icônes des secteurs et logo « œil de vigie ».
+// Icônes Lucide (trait 2 px), mêmes conventions que PEAnalyze + icônes des secteurs et logo Sémaphore.
 import type { CSSProperties } from 'react';
 
 const P: Record<string, string[]> = {
@@ -65,24 +65,29 @@ export function Icon({ name, size = 24, style, strokeWidth = 2, fill }: { name: 
   );
 }
 
-/** Pictogramme Vigie : un œil (la vigie) dont la pupille est ambre. */
-export function EyeMark({ size = 24 }: { size?: number }) {
+/** Pictogramme Sémaphore : un phare dont la lanterne éclaire l'océan, et la maison du sémaphore. Suit currentColor ; lanterne et faisceau en corail. */
+export function Picto({ size = 24 }: { size?: number }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true" style={{ flexShrink: 0 }}>
-      <path d={P.eye[0]} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx="12" cy="12" r="3" fill="var(--brand-tertiary)" />
+    <svg width={size} height={size} viewBox="0 0 48 48" aria-hidden="true" style={{ flexShrink: 0 }}>
+      <path d="M24 12.5 L2 6 L2 19 Z" fill="var(--brand-tertiary)" opacity=".55" />
+      <path d="M19.5 40 L28.5 40 L27.2 18 L20.8 18 Z" fill="currentColor" />
+      <rect x="17.5" y="15.5" width="13" height="3.5" rx="1" fill="currentColor" />
+      <rect x="19.8" y="9.5" width="8.4" height="6.5" rx="1.2" fill="var(--brand-tertiary)" />
+      <path d="M18.8 10 L29.2 10 L24 5 Z" fill="currentColor" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+      <path d="M31.5 40 V31.5 L37 27 L42.5 31.5 V40 Z" fill="currentColor" />
+      <rect x="4" y="40" width="42" height="4" rx="2" fill="currentColor" />
     </svg>
   );
 }
 
-/** Logotype : pictogramme sur fond indigo + « Vigie ». */
-export function Logo({ size = 18 }: { size?: number }) {
+/** Logotype : pictogramme (violet de marque) + nom de l'application. */
+export function Logo({ size = 18, name = 'Sémaphore' }: { size?: number; name?: string }) {
   return (
     <span className="logo" style={{ fontSize: size, lineHeight: 1 }}>
-      <span className="logo-mark" style={{ width: size * 1.45, height: size * 1.45, color: 'var(--text-reverse)' }}>
-        <EyeMark size={size} />
+      <span className="logo-mark" style={{ width: size * 1.6, height: size * 1.6 }}>
+        <Picto size={size * 1.6} />
       </span>
-      <span style={{ color: 'var(--text-accent)' }}>Vigie</span>
+      <span style={{ color: 'var(--text-accent)' }}>{name}</span>
     </span>
   );
 }

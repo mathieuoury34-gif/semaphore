@@ -1,4 +1,4 @@
-/* Vigie – composants propres à l'information (cartes de sujets, brief, secteurs). Uniquement via les tokens. */
+/* Sémaphore – composants propres à l'information (cartes de sujets, brief, secteurs). Uniquement via les tokens. */
 
 :root { --content-max: 680px; }
 .sr-only + .sr-only { margin: 0; }
@@ -12,7 +12,7 @@
 .story-main:hover .story-title { text-decoration: underline; text-decoration-color: var(--border-moderate); }
 .story-meta { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4) var(--space-6); font: var(--type-caption); color: var(--text-moderate); }
 .sector-tag { display: inline-flex; align-items: center; gap: var(--space-4); color: var(--sc, var(--text-primary)); font: var(--type-caption-strong); }
-.story-title { font: var(--type-headline); color: var(--text-strong); overflow-wrap: anywhere; }
+.story-title { font: var(--type-headline); letter-spacing: -0.01em; color: var(--text-strong); overflow-wrap: anywhere; }
 .story:not(.unread) .story-title { color: var(--text-neutral); }
 .story-sum { font: var(--type-snippet); color: var(--text-neutral); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: anywhere; }
 .story-actions { display: flex; flex-direction: column; align-items: center; padding: 4px 4px 4px 0; }
@@ -34,7 +34,7 @@ button.bullet:hover .bullet-text { text-decoration: underline; text-decoration-c
 .bullet-dot { flex-shrink: 0; width: 8px; height: 8px; margin-top: 7px; border-radius: var(--radius-full); background: var(--sc); }
 .bullet-text { flex: 1; min-width: 0; overflow-wrap: anywhere; }
 .bullet-text .unread-dot { margin-right: var(--space-6); vertical-align: 1px; }
-.bullet-sector { display: block; font: var(--type-overline); font-size: 11px; line-height: 16px; letter-spacing: var(--overline-tracking); text-transform: uppercase; color: var(--text-moderate); }
+.bullet-sector { display: block; font: var(--type-overline); font-size: 11px; line-height: 16px; color: var(--text-moderate); }
 .bullet.light + .bullet.light { border-top-color: var(--divider-reverse); }
 .bullet.light .bullet-dot { box-shadow: 0 0 0 1.5px var(--text-reverse-muted); }
 .bullet.light svg, .bullet.light .bullet-sector { color: var(--text-reverse-muted); }

@@ -1,5 +1,5 @@
 // « Favoris » : sujets mis de côté (conservés même après leur sortie du flux) et mots suivis.
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { Icon } from '../ui/icons';
 import { AppHeader, Empty, showToast } from '../ui/kit';
 import { openSheet } from '../ui/router';
@@ -18,6 +18,7 @@ export function FavoritesScreen() {
   const { t, lang } = useT();
   const [q, setQ] = useState('');
   const [kw, setKw] = useState('');
+  const kwInput = useRef<HTMLInputElement>(null);
   const favs = activeFavorites(user);
   const shown = useMemo(() => (q.trim() ? favs.filter((x) => { const c = favIn(x, lang); return matchesQuery(norm(c.title + ' ' + c.summary + ' ' + c.source), q); }) : favs), [favs, q, lang]);
   const v = useMemo(() => viewOf(user.prefs), [user.prefs]);
@@ -26,11 +27,12 @@ export function FavoritesScreen() {
   const addKw = (e: React.FormEvent) => {
     e.preventDefault();
     const v = kw.trim().slice(0, 40);
-    if (!v) return;
+    if (!v) { showToast(t('kw.empty')); kwInput.current?.focus(); return; }
     if (user.prefs.keywords.some((k) => norm(k) === norm(v))) { showToast(t('kw.already')); return; }
     if (user.prefs.keywords.length >= 30) { showToast(t('kw.max'), { error: true }); return; }
     setKeywords([...user.prefs.keywords, v]);
     setKw('');
+    showToast(t('kw.added', { k: v }));
   };
 
   return (
@@ -41,7 +43,7 @@ export function FavoritesScreen() {
           <h2 id="kw-title">{t('kw.title')}</h2>
           <p className="t-caption c-moderate">{t('kw.help')}</p>
           <form className="row" onSubmit={addKw}>
-            <input className="input grow" value={kw} onChange={(e) => setKw(e.target.value)}  placeholder={t('kw.placeholder')} aria-label={t('kw.aria')} maxLength={40} enterKeyHint="done" />
+            <input ref={kwInput} className="input grow" value={kw} onChange={(e) => setKw(e.target.value)}  placeholder={t('kw.placeholder')} aria-label={t('kw.aria')} maxLength={40} enterKeyHint="done" />
             <button type="submit" className="btn btn-primary" aria-label={t('kw.add')}><Icon name="plus" size={20} /></button>
           </form>
           {user.prefs.keywords.length > 0 && (

@@ -1,4 +1,4 @@
-// Construction de Vigie dans dist/ (esbuild) ; --serve pour un serveur local de développement.
+// Construction de Sémaphore dans dist/ (esbuild) ; --serve pour un serveur local de développement.
 import * as esbuild from 'esbuild';
 import { cpSync, mkdirSync, readFileSync, rmSync, writeFileSync, readdirSync, statSync } from 'node:fs';
 import { createHash } from 'node:crypto';

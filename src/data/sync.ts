@@ -36,7 +36,7 @@ async function init(): Promise<boolean> {
   try {
     const [app, a, f] = await Promise.all([load('firebase-app.js'), load('firebase-auth.js'), load('firebase-firestore.js')]);
     fa = a; fs = f;
-    const fbApp = app.initializeApp(FIREBASE_CONFIG, 'vigie');
+    const fbApp = app.initializeApp(FIREBASE_CONFIG, 'semaphore');
     auth = a.getAuth(fbApp);
     auth.languageCode = 'fr';
     db = f.initializeFirestore(fbApp, { localCache: f.persistentLocalCache({ tabManager: f.persistentMultipleTabManager() }) });
@@ -48,7 +48,7 @@ async function init(): Promise<boolean> {
   }
 }
 
-const docRef = (uid: string) => fs.doc(db, 'users', uid, 'vigie', 'main');
+const docRef = (uid: string) => fs.doc(db, 'users', uid, 'semaphore', 'main');
 
 /** Écrit l'état fusionné avec celui du cloud (transaction : deux appareils ne s'écrasent jamais). */
 async function push(uid: string) {

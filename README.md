@@ -1,13 +1,13 @@
-# Vigie
+# Sémaphore
 
 Revue de presse personnelle, par secteur, entièrement en français **ou** entièrement en anglais (au choix). Deux éditions par jour (matin et soir), lisible sur téléphone et ordinateur, 0 € de coût.
 
 - **À la une** : le brief du jour (lecture de 2 minutes), puis 3 points par secteur.
-- **Secteurs** : le fil complet de chaque secteur (Politique, International, Europe, Économie, Climat & énergie, Science, IA & numérique, Espace, Aéro & défense, Veille métier, **Sport**, **Emploi**), tri « Importants » ou « Récents », recherche. *Sport* couvre le football, le rugby, le tennis et les grands événements, avec une attention particulière au triathlon et au parkour (flux Google Actualités, faute de flux dédiés). *Emploi* ne contient que des offres d'emploi et de stage (le reste de l'actualité spatiale est dans *Espace*).
+- **Secteurs** : le fil complet de chaque secteur (Politique, Europe, International, Économie, Climat & Énergie, **Sport**, IA & Numérique, Science, Espace, Aéro & Défense, Veille Métier, **Emploi**), tri « Importants » ou « Récents », recherche. *Sport* couvre le football, le rugby, le tennis et les grands événements, avec une attention particulière au triathlon et au parkour (flux Google Actualités, faute de flux dédiés). *Emploi* ne contient que des offres d'emploi et de stage (le reste de l'actualité spatiale est dans *Espace*).
 - **Favoris** : les sujets mis de côté (gardés même quand ils sortent du fil, dans les deux langues) et des **mots suivis** (« Ariane 6 », « hydrogène »…).
 - **Réglages** (dans cet ordre) : Compte & synchronisation, Thème, **Langue**, Secteurs suivis, **Sources** (tous les journaux suivis, secteur par secteur, avec une case à cocher pour chacun), Résumé, Données.
 
-Plus de 220 sources en français et en anglais (presse, institutions, recherche, blogs, offres d'emploi). Dans les secteurs où l'on peut être trompé par un seul angle (Politique, International, Europe, Économie, Climat & énergie), les sources couvrent **toutes les sensibilités**, de la gauche à la droite, plus des vérificateurs de faits ; une pastille indicative (Gauche, Centre gauche, Centre, Centre droit, Droite) accompagne chaque journal dans Réglages › Sources et sur la fiche d'un sujet, avec la répartition des sensibilités qui ont couvert ce sujet. Ces pastilles sont des repères, pas des verdicts. Un « robot » tourne sur GitHub deux fois par jour : il lit les flux RSS et les services d'offres d'emploi, regroupe les articles qui parlent du même événement, classe par secteur, résume, puis publie le tout sur GitHub Pages.
+Plus de 220 sources en français et en anglais (presse, institutions, recherche, blogs, offres d'emploi). Dans les secteurs où l'on peut être trompé par un seul angle (Politique, Europe, International, Économie, Climat & Énergie), les sources couvrent **toutes les sensibilités**, de la gauche à la droite, plus des vérificateurs de faits ; une pastille indicative (Gauche, Centre gauche, Centre, Centre droit, Droite) accompagne chaque journal dans Réglages › Sources et sur la fiche d'un sujet, avec la répartition des sensibilités qui ont couvert ce sujet. Ces pastilles sont des repères, pas des verdicts. Un « robot » tourne sur GitHub deux fois par jour : il lit les flux RSS et les services d'offres d'emploi, regroupe les articles qui parlent du même événement, classe par secteur, résume, puis publie le tout sur GitHub Pages.
 
 ---
 
@@ -37,21 +37,21 @@ Autres commandes : `npm test` (tests), `npm run typecheck`, `npm run build` (ver
 
 L'ordre compte : active Pages **avant** d'envoyer le code.
 
-1. Sur <https://github.com>, clique sur **+** (en haut à droite) › **New repository**. Nom : `vigie`. Choisis **Public** (Pages est gratuit pour les dépôts publics ; le code ne contient aucun secret). Ne coche rien d'autre. Clique **Create repository**.
+1. Sur <https://github.com>, clique sur **+** (en haut à droite) › **New repository**. Nom : `semaphore`. Choisis **Public** (Pages est gratuit pour les dépôts publics ; le code ne contient aucun secret). Ne coche rien d'autre. Clique **Create repository**.
 2. Dans le dépôt : **Settings** › **Pages** (menu de gauche). Sous *Build and deployment*, **Source** : choisis **GitHub Actions**.
 3. Dans PowerShell, envoie le code :
    ```powershell
    cd C:\Users\mathi\Desktop\Documents\Perso\News
    git init -b main
    git add .
-   git commit -m "Vigie"
-   git remote add origin https://github.com/mathieuoury34-gif/vigie.git
+   git commit -m "Sémaphore"
+   git remote add origin https://github.com/mathieuoury34-gif/semaphore.git
    git push -u origin main
    ```
-4. Onglet **Actions** : le workflow « Publier Vigie » démarre tout seul (3 à 6 minutes : tests, collecte, publication). S'il échoue parce que Pages n'était pas encore activé, clique dessus puis **Re-run all jobs**.
-5. L'application est ensuite sur **https://mathieuoury34-gif.github.io/vigie/**.
+4. Onglet **Actions** : le workflow « Publier Sémaphore » démarre tout seul (3 à 6 minutes : tests, collecte, publication). S'il échoue parce que Pages n'était pas encore activé, clique dessus puis **Re-run all jobs**.
+5. L'application est ensuite sur **https://mathieuoury34-gif.github.io/semaphore/**.
 
-Ensuite, tout est automatique : une édition vers 6 h 50 et une vers 18 h 50 (heure de Paris en été ; une heure plus tôt en hiver). Pour une édition tout de suite : **Actions** › **Publier Vigie** › **Run workflow**.
+Ensuite, tout est automatique : une édition vers 6 h 50 et une vers 18 h 50 (heure de Paris en été ; une heure plus tôt en hiver). Pour une édition tout de suite : **Actions** › **Publier Sémaphore** › **Run workflow**.
 
 > GitHub retarde parfois les tâches planifiées de quelques minutes (voire plus aux heures de pointe). Si le dépôt reste sans aucune activité, GitHub suspend les tâches planifiées après 60 jours : le workflow fait lui-même un commit vide environ tous les 40 jours pour l'éviter.
 
@@ -67,13 +67,13 @@ Ensuite, tout est automatique : une édition vers 6 h 50 et une vers 18 h 50 (he
 
 **Une seule langue à la fois.** Réglages › **Langue** : Français ou English. Tout ce qui s'affiche (boutons, titres, résumés, brief) est alors dans cette langue, sans mélange. Le choix est mémorisé et suit ton compte (synchronisation).
 
-**Ce que l'IA change.** Sans clé d'IA, Vigie ne peut rien traduire : il affiche des **extraits** des articles et, en mode français, uniquement les sujets publiés par des journaux français (en mode anglais, uniquement ceux publiés par des journaux anglophones). La liste est donc plus courte. Avec une IA gratuite, chaque sujet reçoit un titre et un résumé de 2-3 phrases **dans les deux langues** en un seul appel, les sujets étrangers sont traduits (pastille « Traduit »), un sujet couvert par un journal français et un journal anglais est fusionné, et les puces de « À la une » sont rédigées.
+**Ce que l'IA change.** Sans clé d'IA, Sémaphore ne peut rien traduire : il affiche des **extraits** des articles et, en mode français, uniquement les sujets publiés par des journaux français (en mode anglais, uniquement ceux publiés par des journaux anglophones). La liste est donc plus courte. Avec une IA gratuite, chaque sujet reçoit un titre et un résumé de 2-3 phrases **dans les deux langues** en un seul appel, les sujets étrangers sont traduits (pastille « Traduit »), un sujet couvert par un journal français et un journal anglais est fusionné, et les puces de « À la une » sont rédigées.
 
 **Option A — Gemini (Google AI Studio), la plus simple et la plus généreuse.**
 
 1. Va sur <https://aistudio.google.com/apikey>, connecte-toi avec ton compte Google, clique **Create API key** et copie la clé.
-2. Sur GitHub, dans ton dépôt `vigie` : **Settings** › **Secrets and variables** › **Actions** › **New repository secret**. *Name* : `GEMINI_API_KEY`. *Secret* : colle la clé. **Add secret**.
-3. **Actions** › **Publier Vigie** › **Run workflow**.
+2. Sur GitHub, dans ton dépôt `semaphore` : **Settings** › **Secrets and variables** › **Actions** › **New repository secret**. *Name* : `GEMINI_API_KEY`. *Secret* : colle la clé. **Add secret**.
+3. **Actions** › **Publier Sémaphore** › **Run workflow**.
 
 La clé reste dans GitHub : ne la colle jamais dans un message, un fichier du projet ou une conversation. Les modèles essayés par défaut sont `gemini-3.5-flash-lite`, puis `gemini-3.6-flash`, puis `gemini-3.1-flash-lite`. **Ces noms et les quotas gratuits sont à vérifier** (Google les fait évoluer) : si un modèle n'existe plus, le robot passe au suivant. Pour en imposer un autre : dépôt › **Settings** › **Secrets and variables** › **Actions** › onglet **Variables** › **New repository variable** › `GEMINI_MODEL` = le nom du modèle (plusieurs possibles, séparés par des virgules).
 
@@ -87,18 +87,13 @@ Dans tous les cas, si l'IA est indisponible ou son quota épuisé, l'édition es
 
 Les favoris, les articles lus et les réglages restent dans le navigateur de chaque appareil. Pour les retrouver partout : **Réglages › Compte et synchronisation › Continuer avec Google**. Les données de deux appareils sont **fusionnées** (rien n'est écrasé).
 
-Par défaut, Vigie utilise le **projet Firebase de PEAnalyze** (même compte Google, même domaine `github.io`) : il n'y a rien à configurer. Les données de Vigie sont rangées à part (`users/<ton id>/vigie/main`) et ne touchent pas à celles de PEAnalyze. Tu te connectes une fois dans chaque application.
+Sémaphore a son **propre projet Firebase**, `semaphore-c806a`, entièrement distinct de celui de PEAnalyze (comptes, base de données et règles séparés). Rien à configurer : tu te connectes avec Google dans Sémaphore, indépendamment des autres applications. Les données sont rangées sous `users/<ton id>/semaphore/main`.
 
-Si le bouton Google affiche une erreur « unauthorized-domain » : [console Firebase](https://console.firebase.google.com) › projet `peanalyze` › **Authentication** › **Settings** › **Authorized domains** › **Add domain** › `mathieuoury34-gif.github.io`.
+Ce qui est en place dans la console Firebase : *Authentication* › Google activé ; domaine autorisé `mathieuoury34-gif.github.io` ; *Firestore* en mode production, emplacement `eur3` (Europe), règles = contenu de `firestore.rules` (chaque compte n'accède qu'à ses propres données).
 
-**Projet Firebase séparé (facultatif)**
+Si le bouton Google affiche une erreur « unauthorized-domain » : [console Firebase](https://console.firebase.google.com) › projet `semaphore` › **Authentication** › **Settings** › **Authorized domains** › **Add domain** › `mathieuoury34-gif.github.io`.
 
-1. Console Firebase › **Add project** › nom `vigie` › désactive Google Analytics › **Create project**.
-2. **Build** › **Authentication** › **Get started** › **Google** › active, choisis ton adresse e-mail › **Save**. Puis **Settings** › **Authorized domains** : vérifie la présence de `mathieuoury34-gif.github.io`.
-3. **Build** › **Firestore Database** › **Create database** › emplacement `eur3` (Europe) › mode production › **Enable**. Onglet **Rules** : colle le contenu du fichier `firestore.rules` › **Publish**.
-4. Engrenage ⚙ › **Project settings** › *Your apps* › icône web **</>** › nom `vigie` › **Register app**. Copie le bloc `firebaseConfig` dans `src/data/firebase-config.ts` (ce ne sont pas des secrets), puis `git add . && git commit -m "Firebase" && git push`.
-
-> Si tu gardes le projet de PEAnalyze, **ne publie pas** `firestore.rules` : ses règles contiennent aussi la liste de suivi des ETF et celles de PEAnalyze suffisent.
+> Pour recréer le projet (autre compte Google, par exemple) : console Firebase › **Add project** › activer **Authentication › Google**, créer **Firestore** (`eur3`, mode production), publier `firestore.rules`, enregistrer une application web et copier son `firebaseConfig` dans `src/data/firebase-config.ts` (ce ne sont pas des secrets).
 
 Pour rester 100 % local : vide les valeurs de `src/data/firebase-config.ts`.
 
@@ -116,7 +111,7 @@ Tout se règle dans `data-src/` (puis `git push`, ou « Run workflow » pour voi
 
 - **Tester une source** : `node scripts/collect/probe.mjs id-de-la-source` (sans argument : toutes).
 - **Ajouter une entreprise dans Emploi** : une ligne dans `sources.json` avec `"sectors": ["emploi"]`, `"type"` (`greenhouse`, `ashby`, `lever`, `personio`, `recruitee` ou `workday`), `"board"` (l'identifiant de l'entreprise dans l'adresse de sa page « Carrières », ex. `isaraerospace` ; pour Workday : `locataire/serveur/site`, ex. `ag/wd3/Airbus`, avec `"facets"` ou `"searchText"` pour ne garder que la bonne filiale) et `"company"`. Ajouter `"france": true` si l'entreprise a au moins un site en France : ses offres passent devant, et celles situées en France encore plus. Les mots qui décident si une offre est retenue (ingénieur, simulation, stage…) sont dans `rules.json` › `jobs` (et, pour une entreprise précise, `include` / `exclude` / `locations`).
-- **Ajouter un secteur** (ex. « Santé ») : une entrée dans `sectors.json`, des sources et des règles dans les deux autres fichiers, et une couleur `--sector-<id>` (clair et sombre) dans `src/styles/tokens.css` ; `python3 scripts/tools/contrast.py` vérifie le contraste.
+- **Ajouter un secteur** (ex. « Santé ») : une entrée dans `sectors.json`, des sources et des règles dans les deux autres fichiers, et une couleur `--sector-<id>` (clair et sombre) dans `src/styles/tokens.css` ; `python3 scripts/tools/design/check.py` vérifie le contraste (palette à déclarer dans `scripts/tools/design/palette.py`).
 - **Changer la palette** : uniquement `src/styles/tokens.css`.
 
 ---
@@ -127,7 +122,7 @@ Tout se règle dans `data-src/` (puis `git push`, ou « Run workflow » pour voi
 - Quelques sources peuvent refuser les serveurs de GitHub ou être en panne : **Réglages › Sources** signale par un point orange celles qui ont échoué à la dernière édition. L'édition est publiée quand même.
 - Les sujets sont conservés 7 jours (30 jours pour les offres d'emploi). Un favori garde sa propre copie (titre, résumé, lien).
 - Les résumés automatiques peuvent se tromper : le lien vers l'article d'origine est toujours à portée.
-- Vigie est pour un usage personnel ; les titres et extraits appartiennent à leurs éditeurs.
+- Sémaphore est pour un usage personnel ; les titres et extraits appartiennent à leurs éditeurs.
 
 ## 7. Dépannage
 
@@ -138,7 +133,7 @@ Tout se règle dans `data-src/` (puis `git push`, ou « Run workflow » pour voi
 | L'application affiche une ancienne version | **Réglages › Données › Recharger l'application**. |
 | Peu de sujets, ou seulement des extraits | Aucune clé IA, ou quota épuisé : sans IA, seuls les sujets publiés dans la langue choisie s'affichent, en extraits. Voir la section 3. |
 | Un journal ne m'intéresse pas dans un secteur | Réglages › Sources › le secteur › décoche le journal (il reste visible dans les autres secteurs). |
-| Le bouton Google ne fait rien sur téléphone | Autorise les fenêtres surgissantes pour le site, ou ouvre Vigie dans Chrome plutôt que dans une application intégrée. |
+| Le bouton Google ne fait rien sur téléphone | Autorise les fenêtres surgissantes pour le site, ou ouvre Sémaphore dans Chrome plutôt que dans une application intégrée. |
 
 ## Structure
 

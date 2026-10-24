@@ -3,7 +3,9 @@ import { useSyncExternalStore } from 'react';
 import type { Fav, Lang, Story, UserState } from '../domain/types';
 import { emptyState, favFromStory, pruneRead, sanitize, withFav, withoutFav } from '../domain/state';
 
-const KEY = 'vigie:state';
+import { KEY_DEVICE, KEY_STATE } from './keys';
+
+const KEY = KEY_STATE;
 type Listener = () => void;
 
 function load(): UserState {
@@ -102,7 +104,7 @@ export function setSectorOff(sector: string, ids: string[]): void {
 }
 
 // ------------------------------------------------------------ préférences propres à l'appareil (non synchronisées)
-const PREF_KEY = 'vigie:device';
+const PREF_KEY = KEY_DEVICE;
 export interface DevicePrefs { syncedUid?: string }
 export function getDevicePrefs(): DevicePrefs {
   try { return JSON.parse(localStorage.getItem(PREF_KEY) || '{}'); } catch { return {}; }

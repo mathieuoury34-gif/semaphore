@@ -1,8 +1,8 @@
 {
-  "name": "vigie",
+  "name": "semaphore",
   "version": "1.0.0",
   "private": true,
-  "description": "Vigie – veille d'actualité personnelle par secteurs, résumés en français",
+  "description": "Sémaphore – veille d'actualité personnelle par secteurs, résumés en français",
   "type": "module",
   "scripts": {
     "build": "node scripts/build.mjs",

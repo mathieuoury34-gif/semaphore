@@ -1,5 +1,5 @@
 // Requêtes réseau du robot : délai maximal, nouvelle tentative, requêtes conditionnelles (ETag / If-Modified-Since).
-export const UA_FEED = 'Vigie/1.0 (lecteur de flux personnel; +https://github.com/)';
+export const UA_FEED = 'Semaphore/1.0 (lecteur de flux personnel; +https://github.com/)';
 // Pages d'articles : certains sites refusent les robots déclarés. Usage strictement personnel.
 export const UA_PAGE = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36';
 

@@ -5,7 +5,7 @@ const http = require('node:http');
 const fs = require('node:fs');
 const path = require('node:path');
 const dist = path.resolve(__dirname, '../../dist');
-const outDir = path.resolve(process.argv[2] || '/tmp/vigie-qa');
+const outDir = path.resolve(process.argv[2] || '/tmp/semaphore-qa');
 fs.mkdirSync(outDir, { recursive: true });
 const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.png': 'image/png', '.webmanifest': 'application/manifest+json' };
 const server = http.createServer((req, res) => {
@@ -36,7 +36,7 @@ const RUNS = [['fr', 'light', [360, 390, 412, 1280]], ['fr', 'dark', [390, 1280]
         const now = new Date().toISOString();
         const tx = {};
         for (const L of ['fr', 'en']) if (st.tx[L]) tx[L] = { title: st.tx[L].t, summary: st.tx[L].s || '', url: st.items[0].u, source: 'Source' };
-        localStorage.setItem('vigie:state', JSON.stringify({ v: 1, favorites: { [st.id]: { id: st.id, title: st.tx[lang]?.t || st.title, summary: '', sector: st.sectors[0], date: st.date, url: st.items[0].u, source: 'Source', lang: st.lang, tx, savedAt: now } }, read: {}, prefs: { followed: null, keywords: ['espace', 'Ariane'], lang, off: { politique: ['humanite'] }, at: now }, updatedAt: now }));
+        localStorage.setItem('semaphore:state', JSON.stringify({ v: 1, favorites: { [st.id]: { id: st.id, title: st.tx[lang]?.t || st.title, summary: '', sector: st.sectors[0], date: st.date, url: st.items[0].u, source: 'Source', lang: st.lang, tx, savedAt: now } }, read: {}, prefs: { followed: null, keywords: ['espace', 'Ariane'], lang, off: { politique: ['humanite'] }, at: now }, updatedAt: now }));
       }, [multi, lang]);
       for (const [name, hash, mode] of SCREENS) {
         await page.goto(base + hash.replace('__ID__', multi.id));

@@ -226,7 +226,7 @@ function Data() {
       const regs = await navigator.serviceWorker?.getRegistrations?.();
       await Promise.all((regs ?? []).map((r) => r.unregister()));
       const keys = await caches.keys();
-      await Promise.all(keys.filter((k) => k.startsWith('vigie-')).map((k) => caches.delete(k)));
+      await Promise.all(keys.filter((k) => (k.startsWith('semaphore-') || k.startsWith('vigie-'))).map((k) => caches.delete(k)));
     } catch { /* pas de cache */ }
     location.reload();
   };

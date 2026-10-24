@@ -1,6 +1,6 @@
 // Composants partagés (mêmes composants et mêmes classes que PEAnalyze)
 import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
-import { Icon, Logo } from './icons';
+import { Icon, Logo, Picto } from './icons';
 import { back, closeSheet, navigate, tabOf, useRoute, type Tab } from './router';
 import { loadData, staleHours, useFeed } from '../data/feed';
 import { dateTime, relTime } from '../domain/format';
@@ -35,6 +35,7 @@ export function AppHeader({ title, actions }: { title: string; actions?: ReactNo
   return (
     <header className={'app-header' + (compact ? ' compact' : '')}>
       <div className="bar">
+        <span className="header-mark"><Picto size={32} /></span>
         <div className="titles">
           <h1>{title}</h1>
           <span className="updated">{updated}</span>
@@ -142,7 +143,7 @@ export function TabBar() {
         ))}
       </nav>
       <aside className="sidenav" aria-label={t('nav.main')}>
-        <Logo size={20} />
+        <Logo size={20} name={t('app.name')} />
         <nav>
           {TABS.map((tab) => (
             <a key={tab.id} href={'#' + tab.to} aria-current={active === tab.id ? 'page' : undefined} onClick={go(tab.to)}>

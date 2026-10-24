@@ -1,7 +1,8 @@
 // Thème de l'interface : clair, sombre ou celui du système. Préférence propre à l'appareil,
 // appliquée sans recharger (attribut data-theme sur <html>, couleurs dans styles/tokens.css).
 export type ThemePref = 'light' | 'dark' | 'system';
-const KEY = 'vigie:theme';
+import { KEY_THEME } from './data/keys';
+const KEY = KEY_THEME;
 
 function read(): ThemePref {
   try {
@@ -29,7 +30,7 @@ function apply(): void {
   const t = resolvedTheme();
   document.documentElement.dataset.theme = t;
   const meta = document.querySelector('meta[name="theme-color"]');
-  if (meta) meta.setAttribute('content', getComputedStyle(document.documentElement).getPropertyValue('--bg-page').trim() || (t === 'dark' ? '#0E1020' : '#FFFFFF'));
+  if (meta) meta.setAttribute('content', getComputedStyle(document.documentElement).getPropertyValue('--bg-page').trim() || (t === 'dark' ? '#141216' : '#FAF8F5'));
   listeners.forEach((l) => l());
 }
 
