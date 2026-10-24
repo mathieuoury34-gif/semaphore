@@ -1,0 +1,12 @@
+[
+  { "id": "politique",     "name": "Politique",        "short": "Politique",  "icon": "landmark", "description": "Vie politique française : gouvernement, Parlement, partis, réformes.", "summaries": 10 },
+  { "id": "international", "name": "International",    "short": "Monde",      "icon": "globe",    "description": "Actualité du reste du monde : conflits, diplomatie, grands événements.", "summaries": 12 },
+  { "id": "europe",        "name": "Europe",           "short": "Europe",     "icon": "europe",   "description": "Union européenne, Allemagne et voisins : décisions, lois, élections.", "summaries": 8 },
+  { "id": "economie",      "name": "Économie",         "short": "Économie",   "icon": "euro",     "description": "Macroéconomie, taux, emploi, grandes entreprises (les marchés restent dans PEAnalyze).", "summaries": 10 },
+  { "id": "climat",        "name": "Climat & énergie", "short": "Climat",     "icon": "leaf",     "description": "Climat, biodiversité, transition, nucléaire, réseau électrique, hydrogène.", "summaries": 10 },
+  { "id": "science",       "name": "Science",          "short": "Science",    "icon": "flask",    "description": "Physique, vivant, médecine, mathématiques, grandes découvertes.", "summaries": 10 },
+  { "id": "ia",            "name": "IA & numérique",   "short": "IA",         "icon": "cpu",      "description": "Intelligence artificielle, puces, cloud, cybersécurité.", "summaries": 10 },
+  { "id": "espace",        "name": "Espace",           "short": "Espace",     "icon": "rocket",   "description": "Lancements, missions, astronomie, agences et acteurs privés.", "summaries": 10 },
+  { "id": "aero",          "name": "Aéro & défense",   "short": "Aéro",       "icon": "plane",    "description": "Aviation, industrie aéronautique, drones, défense aérienne.", "summaries": 10 },
+  { "id": "metier",        "name": "Veille métier",    "short": "Métier",     "icon": "wrench",   "description": "Mécanique des fluides, aéroacoustique, propulsion, cryogénie, simulation numérique.", "summaries": 10 }
+]

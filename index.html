@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Vigie</title>
+  <meta name="description" content="Vigie : revue de presse personnelle par secteur, résumée en français, deux éditions par jour.">
+  <meta name="theme-color" content="#FFFFFF">
+  <meta name="color-scheme" content="light dark">
+  <script>window.__t0=Date.now();try{var t=localStorage.getItem('vigie:theme');if(t!=='light'&&t!=='dark')t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t;}catch(e){}</script>
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Vigie">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <style>
+    /* écran de démarrage : affiché dès le premier rendu, avant que le CSS et le JS soient chargés */
+    html{background:#FFFFFF}
+    html[data-theme="dark"]{background:#0E1020}
+    body{margin:0}
+    .splash{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:#FFFFFF;transition:opacity .35s ease}
+    html[data-theme="dark"] .splash{background:#0E1020}
+    .splash.out{opacity:0;pointer-events:none}
+    .splash .mark{width:88px;height:88px;border-radius:24px;background:#4338CA;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 30px rgba(67,56,202,.30);animation:splash-pulse 1.5s ease-in-out infinite}
+    html[data-theme="dark"] .splash .mark{background:#4F46D8}
+    .splash .lid{fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:60;stroke-dashoffset:60;animation:splash-draw 1.5s ease-in-out infinite}
+    .splash .iris{fill:#F59E0B;transform-origin:12px 12px;animation:splash-iris 1.5s ease-in-out infinite}
+    @keyframes splash-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+    @keyframes splash-draw{0%{stroke-dashoffset:60}60%,100%{stroke-dashoffset:0}}
+    @keyframes splash-iris{0%,30%{transform:scale(0)}70%,100%{transform:scale(1)}}
+    @media (prefers-reduced-motion:reduce){.splash .mark,.splash .lid,.splash .iris{animation:none}.splash .lid{stroke-dashoffset:0}}
+  </style>
+  <link rel="stylesheet" href="app.css">
+  <!-- polices : chargées sans bloquer l'affichage -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Open+Sans:wght@400;600;700&display=swap" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Open+Sans:wght@400;600;700&display=swap"></noscript>
+</head>
+<body>
+  <div id="root"></div>
+  <div id="splash" class="splash" role="status" aria-label="Vigie"><div class="mark"><svg width="48" height="48" viewBox="0 0 24 24" aria-hidden="true"><path class="lid" d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle class="iris" cx="12" cy="12" r="3"/></svg></div></div>
+  <noscript>Vigie a besoin de JavaScript.</noscript>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

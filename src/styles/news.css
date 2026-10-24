@@ -1,0 +1,87 @@
+/* Vigie – composants propres à l'information (cartes de sujets, brief, secteurs). Uniquement via les tokens. */
+
+:root { --content-max: 680px; }
+.sr-only + .sr-only { margin: 0; }
+
+/* ------------------------------------------------------------------ liste de sujets */
+.story-list { background: var(--bg-surface); border-radius: var(--radius-12); box-shadow: var(--shadow-s); overflow: hidden; }
+.story { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: start; }
+.story + .story { border-top: 1px solid var(--divider-minimal); }
+.story.unread::before { content: ''; position: absolute; left: 0; top: 14px; bottom: 14px; width: 3px; border-radius: 0 3px 3px 0; background: var(--sc, var(--brand-primary)); }
+.story-main { display: flex; flex-direction: column; gap: var(--space-6); padding: 14px 0 14px var(--screen-margin); border: 0; background: transparent; color: inherit; text-align: left; cursor: pointer; min-width: 0; }
+.story-main:hover .story-title { text-decoration: underline; text-decoration-color: var(--border-moderate); }
+.story-meta { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4) var(--space-6); font: var(--type-caption); color: var(--text-moderate); }
+.sector-tag { display: inline-flex; align-items: center; gap: var(--space-4); color: var(--sc, var(--text-primary)); font: var(--type-caption-strong); }
+.story-title { font: var(--type-headline); color: var(--text-strong); overflow-wrap: anywhere; }
+.story:not(.unread) .story-title { color: var(--text-neutral); }
+.story-sum { font: var(--type-snippet); color: var(--text-neutral); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: anywhere; }
+.story-actions { display: flex; flex-direction: column; align-items: center; padding: 4px 4px 4px 0; }
+.unread-dot { flex-shrink: 0; display: inline-block; width: 8px; height: 8px; border-radius: var(--radius-full); background: var(--primary-fg); }
+.icon-btn.star { color: var(--text-moderate); }
+.icon-btn.star.on { color: var(--brand-tertiary); }
+.badge.outline.en { margin-left: var(--space-6); }
+
+/* ------------------------------------------------------------------ brief et résumés par secteur */
+.brief-card { display: flex; flex-direction: column; gap: var(--space-12); padding: var(--space-20) var(--space-16) var(--space-12); border-radius: var(--radius-16); background: var(--brand-accent); color: var(--text-reverse); box-shadow: var(--shadow-s); }
+.brief-card .overline { color: var(--text-reverse-muted); }
+.brief-card h2 { color: var(--text-reverse); }
+.bullets { display: flex; flex-direction: column; }
+.bullet { display: flex; align-items: flex-start; gap: var(--space-10); width: 100%; padding: var(--space-10) 0; border: 0; background: transparent; color: inherit; text-align: left; font: 400 15px/22px var(--font-body); }
+button.bullet { cursor: pointer; min-height: var(--touch-min); }
+button.bullet:hover .bullet-text { text-decoration: underline; text-decoration-color: var(--border-moderate); }
+.bullet + .bullet { border-top: 1px solid var(--divider-minimal); }
+.bullet svg { margin-top: 2px; color: var(--text-moderate); }
+.bullet-dot { flex-shrink: 0; width: 8px; height: 8px; margin-top: 7px; border-radius: var(--radius-full); background: var(--sc); }
+.bullet-text { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.bullet-text .unread-dot { margin-right: var(--space-6); vertical-align: 1px; }
+.bullet-sector { display: block; font: var(--type-overline); font-size: 11px; line-height: 16px; letter-spacing: var(--overline-tracking); text-transform: uppercase; color: var(--text-moderate); }
+.bullet.light + .bullet.light { border-top-color: var(--divider-reverse); }
+.bullet.light .bullet-dot { box-shadow: 0 0 0 1.5px var(--text-reverse-muted); }
+.bullet.light svg, .bullet.light .bullet-sector { color: var(--text-reverse-muted); }
+.bullet.light .unread-dot { background: var(--brand-tertiary); }
+.bullet.light .badge { color: var(--text-reverse); border-color: var(--divider-reverse); background: transparent; }
+.digest-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-16); }
+.digest-card { padding-bottom: var(--space-8); }
+.digest-title { display: flex; align-items: center; gap: var(--space-10); font: var(--type-h3); }
+.digest-icon { flex-shrink: 0; width: 32px; height: 32px; border-radius: var(--radius-full); display: inline-flex; align-items: center; justify-content: center; background: var(--bg-brand-minimal); background: color-mix(in srgb, var(--sc, var(--brand-primary)) 14%, var(--bg-surface)); color: var(--sc, var(--text-primary)); }
+.see-all { display: inline-flex; align-items: center; gap: 2px; padding: 0 var(--space-4) 0 var(--space-8); font: var(--type-chip); cursor: pointer; }
+
+/* ------------------------------------------------------------------ secteurs */
+.tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-12); }
+.sector-tile { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-6); padding: var(--space-16) var(--space-12) var(--space-12); border: 0; border-radius: var(--radius-12); background: var(--bg-surface); box-shadow: var(--shadow-s); color: var(--text); text-align: left; cursor: pointer; min-width: 0; }
+.sector-tile:hover { background: var(--bg-hover); }
+.sector-tile .tile-icon { width: 40px; height: 40px; border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center; background: var(--bg-brand-minimal); background: color-mix(in srgb, var(--sc, var(--brand-primary)) 14%, var(--bg-surface)); color: var(--sc, var(--text-primary)); }
+.tile-name { font: 700 15px/20px var(--font-heading); }
+.tile-desc { font: var(--type-caption); color: var(--text-moderate); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.tile-count { margin-top: auto; padding-top: var(--space-4); font: var(--type-caption-strong); color: var(--text-moderate); }
+.tile-count.has { color: var(--sc, var(--text-primary)); }
+
+/* ------------------------------------------------------------------ recherche, puces, feuilles */
+.search.small { height: 40px; padding: 0 var(--space-12); }
+.search input::-webkit-search-cancel-button { display: none; }
+.chip.kw { gap: var(--space-6); height: 32px; padding: 0 var(--space-10) 0 var(--space-12); }
+.sheet-title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sheet-story { padding: var(--space-4) 0 var(--space-24); }
+.story-full { font: 400 16px/26px var(--font-body); color: var(--text); overflow-wrap: anywhere; }
+.src-list { display: flex; flex-direction: column; }
+.src-row { display: flex; align-items: center; gap: var(--space-12); padding: var(--space-12) 0; color: var(--text); text-decoration: none; min-height: var(--touch-min); }
+.src-list li + li { border-top: 1px solid var(--divider-minimal); }
+.src-row:hover .t-strong { text-decoration: underline; }
+.src-row svg { color: var(--primary-fg); }
+
+/* ------------------------------------------------------------------ réglages */
+.setting-row { display: flex; align-items: center; gap: var(--space-12); min-height: 52px; padding: var(--space-6) 0; }
+.status-dot { flex-shrink: 0; width: 10px; height: 10px; border-radius: var(--radius-full); }
+.status-dot.ok { background: var(--success); }
+.status-dot.ko { background: var(--warning); }
+details.more summary { list-style: none; display: flex; align-items: center; justify-content: space-between; min-height: var(--touch-min); font: var(--type-body-strong); color: var(--primary-fg); cursor: pointer; }
+details.more summary::-webkit-details-marker { display: none; }
+details.more[open] summary svg { transform: rotate(180deg); }
+.btn-tertiary { display: inline-flex; align-items: center; justify-content: center; gap: var(--space-6); font: var(--type-button); cursor: pointer; }
+
+@media (min-width: 1024px) {
+  :root { --content-max: 860px; }
+  .digest-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
+  .tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .app-header .updated { display: inline; }
+}

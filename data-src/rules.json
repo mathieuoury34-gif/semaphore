@@ -1,0 +1,45 @@
+{
+  "_aide": "Règles de classement par mots-clés. Termes sans accent, en minuscules, comparés à des mots entiers. Préfixes : « cs: » = respecte la casse (ex. cs:IA), « re: » = expression régulière sur le texte normalisé. « strong » : un seul terme dans le titre suffit à ajouter le secteur ; « any » : il faut un terme dans le titre ou deux termes distincts dans le résumé.",
+  "sectors": {
+    "espace": {
+      "strong": ["fusee", "fusees", "ariane", "ariane 6", "vega", "spacex", "starship", "falcon 9", "blue origin", "new glenn", "rocket lab", "satellite", "satellites", "lanceur", "lanceurs", "nasa", "cnes", "arianegroup", "station spatiale", "artemis", "james webb", "jwst", "exoplanete", "exoplanetes", "astronaute", "astronautes", "cosmonaute", "asteroide", "asteroides", "comete", "starlink", "kuiper", "roscosmos", "isro", "jaxa", "rocket", "rockets", "spacecraft", "launch vehicle", "space station", "orbiter", "lander", "telescope spatial", "space telescope", "esa", "cs:ISS", "re:\\b(sur|vers|de|la planete|mission|missions) mars\\b", "re:\\bmars (sample|rover|2020|perseverance|odyssey)\\b", "re:\\b(la )?lune( |$)", "re:\\bthe moon\\b", "re:\\blunar\\b"],
+      "any": ["orbite", "orbital", "spatial", "spatiale", "spatiaux", "astronomie", "astronomes", "galaxie", "galaxies", "cosmos", "sonde", "mission", "launch", "liftoff", "constellation", "debris"]
+    },
+    "ia": {
+      "strong": ["intelligence artificielle", "artificial intelligence", "cs:IA", "cs:AI", "openai", "chatgpt", "anthropic", "deepmind", "llm", "llms", "modele de langage", "modeles de langage", "large language model", "machine learning", "apprentissage automatique", "deep learning", "reseau de neurones", "neural network", "nvidia", "mistral ai", "hugging face", "deepseek", "ia generative", "generative ai", "chatbot", "chatbots", "semi conducteur", "semi conducteurs", "semiconducteur", "semiconductor", "semiconductors", "cyberattaque", "cyberattaques", "ransomware", "cybersecurite", "cybersecurity", "data center", "datacenter", "centre de donnees"],
+      "any": ["algorithme", "algorithmes", "gpu", "puce", "puces", "cloud", "robot", "robots", "numerique", "logiciel", "open source", "piratage", "fuite de donnees", "data breach", "agent", "agents"]
+    },
+    "aero": {
+      "strong": ["avion", "avions", "aviation", "aeronautique", "aerien", "aerienne", "airbus", "boeing", "safran", "dassault", "rafale", "embraer", "comac", "drone", "drones", "helicoptere", "helicopteres", "chasseur", "chasseurs", "f 35", "f 22", "missile", "missiles", "otan", "nato", "armee de l air", "air force", "porte avions", "hypersonique", "hypersonic", "avionneur", "turboreacteur", "turbofan", "fighter", "bomber", "bombardier", "aircraft", "airliner", "aeroport", "airline", "airlines", "compagnie aerienne", "dgac", "easa", "faa"],
+      "any": ["defense", "militaire", "militaires", "armee", "armement", "arme", "armes", "military", "weapons", "warship", "navy"]
+    },
+    "metier": {
+      "strong": ["aeroacoustique", "aeroacoustics", "aeroacoustic", "cfd", "mecanique des fluides", "fluid dynamics", "fluid mechanics", "turbulence", "turbulent", "navier stokes", "large eddy", "direct numerical simulation", "simulation numerique", "numerical simulation", "couche limite", "boundary layer", "supersonique", "supersonic", "hypersonique", "hypersonic", "onde de choc", "ondes de choc", "shock wave", "shock waves", "cryogenie", "cryogenique", "cryogenic", "cryogenics", "cryogenie", "azote liquide", "oxygene liquide", "hydrogene liquide", "liquid hydrogen", "liquid oxygen", "liquid nitrogen", "propulsion", "propergol", "propergols", "propellant", "propellants", "tuyere", "nozzle", "nozzles", "moteur fusee", "rocket engine", "rocket engines", "essai moteur", "engine test", "chambre de combustion", "combustion chamber", "methalox", "raptor", "vulcain", "prometheus", "turbopompe", "turbopump", "turbopumps", "rans", "cs:LES", "cs:DNS", "ecoulement", "ecoulements", "flow control", "flow separation", "vortex", "tourbillon", "jet noise", "bruit de jet", "re:\\bcombustion\\b", "re:\\bdetonation\\b"],
+      "any": ["acoustique", "acoustic", "acoustics", "fluide", "fluides", "fluid", "fluids", "soufflerie", "wind tunnel", "aerodynamique", "aerodynamic", "aerodynamics", "thermique", "heat transfer", "transfert thermique", "simulation", "solveur", "solver", "openfoam", "maillage", "mesh", "spectral", "finite volume", "volumes finis", "lattice boltzmann", "ejecteur", "ablation", "rentree atmospherique", "atmospheric entry", "reentry"]
+    },
+    "climat": {
+      "strong": ["climat", "climatique", "climate", "rechauffement", "global warming", "giec", "ipcc", "cop30", "cop31", "cop32", "carbone", "carbon", "gaz a effet de serre", "greenhouse gas", "emissions", "biodiversite", "biodiversity", "energie renouvelable", "renewable", "renewables", "solaire", "photovoltaique", "eolien", "eolienne", "wind power", "nucleaire", "nuclear power", "reacteur", "epr", "hydrogene", "hydrogen", "transition energetique", "energy transition", "electricite", "rte", "enedis", "edf", "canicule", "heatwave", "secheresse", "drought", "inondation", "inondations", "flood", "floods", "banquise", "glacier", "glaciers", "sea level", "niveau de la mer", "deforestation"],
+      "any": ["energie", "energy", "ecologie", "ecologique", "environnement", "environment", "pollution", "plastique", "recyclage", "gaz", "petrole", "oil", "charbon", "coal", "batterie", "batteries", "voiture electrique", "electric vehicle"]
+    },
+    "science": {
+      "strong": ["physique", "physics", "chimie", "chemistry", "biologie", "biology", "genome", "genomique", "adn", "dna", "crispr", "neurosciences", "neuroscience", "paleontologie", "fossile", "fossiles", "fossil", "mathematiques", "mathematics", "theoreme", "theorem", "quantique", "quantum", "particule", "particules", "cern", "boson", "etude publiee", "study published", "chercheurs", "researchers", "scientifiques", "scientists", "vaccin", "vaccine", "cancer", "antibiotique", "virus", "pandemie", "pandemic", "prix nobel", "nobel prize"],
+      "any": ["recherche", "research", "decouverte", "discovery", "laboratoire", "laboratory", "etude", "study", "experience", "experiment", "sante", "health", "medecine", "medicine", "medical"]
+    },
+    "economie": {
+      "strong": ["inflation", "bce", "ecb", "banque centrale", "central bank", "taux directeur", "taux d interet", "interest rate", "interest rates", "pib", "gdp", "croissance", "recession", "chomage", "unemployment", "emploi", "deficit", "dette publique", "public debt", "tarifs douaniers", "tariffs", "tariff", "fmi", "imf", "ocde", "oecd", "fed", "federal reserve", "budget", "faillite", "bankruptcy", "resultats trimestriels", "earnings", "bourse", "stock market", "cac 40", "s p 500", "euro", "dollar", "petrole", "pouvoir d achat", "salaire", "salaires", "retraites", "retraite"],
+      "any": ["economie", "economy", "economic", "economique", "entreprise", "entreprises", "marche", "marches", "market", "markets", "prix", "prices", "industrie", "industry", "commerce", "trade", "investissement", "investment"]
+    },
+    "politique": {
+      "strong": ["gouvernement", "premier ministre", "assemblee nationale", "senat", "depute", "deputes", "senateur", "senateurs", "elysee", "macron", "motion de censure", "projet de loi", "proposition de loi", "presidentielle", "legislatives", "municipales", "conseil constitutionnel", "49 3", "cs:RN", "cs:LFI", "cs:LR", "cs:PS", "ministre", "ministres", "remaniement"],
+      "any": ["politique", "parti", "partis", "election", "elections", "vote", "reforme", "loi", "lois"]
+    },
+    "europe": {
+      "strong": ["union europeenne", "european union", "commission europeenne", "european commission", "parlement europeen", "european parliament", "bruxelles", "brussels", "conseil europeen", "european council", "eurogroupe", "zone euro", "eurozone", "von der leyen", "schengen", "pacte vert", "green deal", "bundestag", "bundesrat", "berlin", "allemagne", "germany", "merz", "afd", "munich", "baviere", "bavaria"],
+      "any": ["europe", "europeen", "europeens", "european", "ue", "eu"]
+    },
+    "international": {
+      "strong": ["ukraine", "russie", "russia", "gaza", "israel", "hamas", "hezbollah", "iran", "chine", "china", "taiwan", "etats unis", "united states", "trump", "biden", "harris", "onu", "united nations", "otan", "nato", "conflit", "guerre", "war", "ceasefire", "cessez le feu", "diplomatie", "sommet", "g7", "g20", "brics", "coup d etat", "sanctions", "refugies", "refugees", "migrants"],
+      "any": ["international", "monde", "mondial", "global", "president", "gouvernement"]
+    }
+  }
+}

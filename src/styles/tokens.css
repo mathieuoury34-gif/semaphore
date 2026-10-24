@@ -1,0 +1,266 @@
+/* ==========================================================================
+   Design tokens – Vigie (veille d'actualité)
+   Mêmes noms de variables, mêmes formes et même typographie que PEAnalyze :
+   seule la colorimétrie change (« Encre & ambre » : indigo profond + accent ambre).
+   Pour changer d'ambiance, modifier uniquement les blocs de couleurs ci-dessous
+   (alternatives testées : bordeaux #9F1D3A, bleu nuit #1E4DB7, violet prune #6B2D8C).
+   Polices : Montserrat 500/600/700 + Open Sans 400/600/700 (Google Fonts).
+   ========================================================================== */
+
+:root {
+  /* ---------- Typographie ---------- */
+  --font-heading: Montserrat, system-ui, ui-sans-serif, sans-serif;
+  --font-body: "Open Sans", system-ui, ui-sans-serif, sans-serif;
+
+  --fs-11: 11px;  --lh-11: 16.5px;
+  --fs-12: 12px;  --lh-12: 18px;
+  --fs-14: 14px;  --lh-14: 21px;
+  --fs-16: 16px;  --lh-16: 24px;
+  --fs-18: 18px;  --lh-18: 27px;
+  --fs-24: 24px;  --lh-24: 36px;
+  --fs-28: 28px;  --lh-28: 42px;
+  --fs-34: 34px;  --lh-34: 48px;
+  --fs-40: 40px;  --lh-40: 56px;
+
+  --fw-400: 400; --fw-500: 500; --fw-600: 600; --fw-700: 700;
+
+  /* styles composés (à utiliser avec la propriété raccourcie `font`) */
+  --type-display: var(--fw-700) var(--fs-34)/var(--lh-34) var(--font-heading);
+  --type-h1: var(--fw-700) var(--fs-28)/var(--lh-28) var(--font-heading);
+  --type-h2: var(--fw-700) var(--fs-24)/var(--lh-24) var(--font-heading);
+  --type-h3: var(--fw-700) var(--fs-18)/var(--lh-18) var(--font-heading);
+  --type-amount-l: var(--fw-700) var(--fs-18)/var(--lh-18) var(--font-heading);
+  --type-amount-m: var(--fw-700) var(--fs-16)/var(--lh-16) var(--font-heading);
+  --type-amount-s: var(--fw-700) var(--fs-14)/var(--lh-14) var(--font-heading);
+  --type-button: var(--fw-700) var(--fs-14)/var(--lh-14) var(--font-heading);
+  --type-overline: var(--fw-700) var(--fs-12)/var(--lh-12) var(--font-heading);
+  --type-chip: var(--fw-700) var(--fs-12)/var(--lh-12) var(--font-heading);
+  --type-body: var(--fw-400) var(--fs-14)/var(--lh-14) var(--font-body);
+  --type-body-strong: var(--fw-600) var(--fs-14)/var(--lh-14) var(--font-body);
+  --type-label: var(--fw-600) var(--fs-14)/var(--lh-14) var(--font-body);
+  --type-caption: var(--fw-400) var(--fs-12)/var(--lh-12) var(--font-body);
+  --type-caption-strong: var(--fw-600) var(--fs-12)/var(--lh-12) var(--font-body);
+  --type-legal: var(--fw-400) var(--fs-11)/var(--lh-11) var(--font-body);
+  --type-tab: var(--fw-600) var(--fs-11)/var(--lh-11) var(--font-body);
+  --type-badge: var(--fw-600) var(--fs-11)/var(--lh-11) var(--font-body);
+  /* lecture (information) */
+  --type-headline: var(--fw-700) var(--fs-16)/22px var(--font-heading);
+  --type-snippet: var(--fw-400) var(--fs-14)/var(--lh-14) var(--font-body);
+  --overline-tracking: 0.6px;
+
+  /* ---------- Marque : indigo ---------- */
+  --brand-primary: #4338CA;          /* blanc dessus : 7,9:1 */
+  --brand-primary-hover: #3730A3;
+  --brand-primary-pressed: #2E2A85;
+  --brand-secondary: #5B52D6;
+  --brand-accent: #2E2A85;
+  --brand-tertiary: #D97706;         /* ambre décoratif (jamais pour du texte) */
+  --brand-light: #C7C3F5;
+  --primary-fg: var(--brand-primary);
+  --primary-fg-hover: var(--brand-primary-hover);
+
+  /* ---------- Fonds ---------- */
+  --bg-page: #FFFFFF;
+  --bg-surface: #FFFFFF;
+  --bg-surface-minimal: #F5F6FA;
+  --bg-brand-minimal: #F1F0FD;
+  --bg-brand-moderate: #DDDAF8;
+  --bg-brand-neutral: #ECEDF6;
+  --bg-blue-minimal: #E3EEFB;
+  --bg-grey-minimal: #E9EAF2;
+  --bg-contrast: #1B1E3A;
+  --bg-hover: #6B6FA033;
+  --bg-pressed: #6B6FA04D;
+  --bg-highlight: #4338CA14;
+  --bg-overlay: #0B0D2280;
+  --bg-reverse-subtle: #FFFFFF26;
+  --bg-disabled: #E9EAF2;
+
+  /* ---------- Textes ---------- */
+  --text: #1B1E3A;
+  --text-strong: #0B0D22;
+  --text-neutral: #4A4F6A;
+  --text-moderate: #666B8A;
+  --text-primary: #4338CA;
+  --text-accent: #2E2A85;
+  --text-blue: #1D5FA8;
+  --text-reverse: #FFFFFF;
+  --text-reverse-muted: #D9D6F7;
+  --text-disabled: #666B8A;
+
+  /* ---------- Bordures & séparateurs ---------- */
+  --border: #666B8A;
+  --border-minimal: #D9DBE8;
+  --border-moderate: #AEB1C8;
+  --border-primary: #4338CA;
+  --divider: #AEB1C8;
+  --divider-minimal: #E9EAF2;
+  --divider-reverse: #FFFFFF33;
+  --focus-indicator: #B45309;        /* anneau de focus ambre */
+
+  /* ---------- États fonctionnels ---------- */
+  --success: #1B7F3B;  --success-text: #166534;  --success-bg: #E8F6EC;
+  --critical: #C62828; --critical-text: #A31515; --critical-bg: #FDECEC;
+  --warning: #B45309;  --warning-text: #92400E;  --warning-bg: #FEF3E2;
+  --info: #1565C0;     --info-text: #0F4C97;     --info-bg: #E8F1FC;
+  --notification: #D81B60;           /* pastille « nouveau » */
+
+  /* ---------- Palette graphiques ---------- */
+  --chart-1: #4338CA;  --chart-2: #00A3B4;  --chart-3: #F2B01E;  --chart-4: #2E2A85;
+  --chart-5: #9A93F0;  --chart-6: #E8590C;  --chart-7: #2E9E6B;  --chart-8: #BFD3F2;
+  --chart-other: #B5B8D6;  --chart-grid: #E9EAF2;  --chart-axis: #666B8A;
+  --chart-value: #4338CA;  --chart-value-area: #4338CA1A;
+  --chart-ref-line: #666B8A;
+  --chart-up: #1B7F3B;  --chart-down: #C62828;
+
+  /* ---------- Couleur FIXE de chaque secteur (contraste ≥ 4,5:1, vérifié par scripts/tools/contrast.py) ---------- */
+  --sector-politique: #C2185B;
+  --sector-international: #1565C0;
+  --sector-europe: #3949AB;
+  --sector-economie: #965A00;
+  --sector-climat: #2C7730;
+  --sector-science: #8E24AA;
+  --sector-ia: #455A64;
+  --sector-espace: #00737D;
+  --sector-aero: #BD360F;
+  --sector-metier: #6C6C00;
+
+  /* ---------- Rayons ---------- */
+  --radius-2: 2px; --radius-4: 4px; --radius-6: 6px; --radius-8: 8px;
+  --radius-12: 12px;
+  --radius-16: 16px;
+  --radius-20: 20px;
+  --radius-24: 24px; --radius-32: 32px; --radius-40: 40px;
+  --radius-full: 999px;
+
+  /* ---------- Ombres (teintées indigo) ---------- */
+  --shadow-xs: 0 1px 3px 0 #1B1E3A26;
+  --shadow-s: 0 4px 16px 0 #1B1E3A1A;
+  --shadow-m: 0 10px 60px 0 #1B1E3A26;
+  --shadow-l: 0 20px 80px 0 #1B1E3A4D;
+  --shadow-sticky: 0 -2px 12px 0 #1B1E3A1A;
+  --shadow-fab: 0 6px 20px 0 #4338CA59;
+
+  /* ---------- Espacements (grille 4px) ---------- */
+  --space-2: 2px;
+  --space-4: 4px; --space-6: 6px; --space-8: 8px; --space-10: 10px; --space-12: 12px;
+  --space-16: 16px; --space-20: 20px; --space-24: 24px; --space-32: 32px;
+  --space-40: 40px; --space-48: 48px; --space-64: 64px;
+
+  /* ---------- Mise en page mobile ---------- */
+  --screen-width: 390px;
+  --screen-height: 844px;
+  --screen-margin: 16px;
+  --safe-top: 47px;
+  --safe-bottom: 34px;
+  --header-height: 64px;
+  --tabbar-height: 64px;
+  --touch-min: 44px;
+  --fab-size: 56px;
+
+  /* ---------- Composants ---------- */
+  --button-height: 40px;
+  --button-padding: 8px 24px;
+  --button-radius: 999px;
+  --chip-height: 36px;
+  --chip-padding: 8px 16px;
+  --tab-indicator-height: 3px;
+  --input-height: 48px;
+  --input-radius: 4px;
+  --input-border: 1px solid #666B8A;
+  --input-border-focus: 2px solid #B45309;
+  --input-border-error: 2px solid #C62828;
+  --toast-bg: #1B7F3B;
+  --tooltip-bg: #2E2A85;
+  --sparkline-height: 40px;
+}
+
+/* ==========================================================================
+   Thème sombre : mêmes rôles, valeurs adaptées (texte ≥ 4,5:1).
+   ========================================================================== */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --brand-primary: #4F46D8;
+  --brand-primary-hover: #6158E8;
+  --brand-primary-pressed: #4038B8;
+  --brand-secondary: #7A72EA;
+  --brand-accent: #2F2B7A;
+  --brand-tertiary: #FBBF24;
+  --brand-light: #B8B3F7;
+  --primary-fg: #A5ACFF;
+  --primary-fg-hover: #C4C9FF;
+
+  --bg-page: #0E1020;
+  --bg-surface: #171A2E;
+  --bg-surface-minimal: #1E2238;
+  --bg-brand-minimal: #1B1D45;
+  --bg-brand-moderate: #2A2C66;
+  --bg-brand-neutral: #1D2036;
+  --bg-blue-minimal: #14283F;
+  --bg-grey-minimal: #262A44;
+  --bg-contrast: #E6E8F5;
+  --bg-hover: #A5ACFF26;
+  --bg-pressed: #A5ACFF40;
+  --bg-highlight: #A5ACFF1F;
+  --bg-overlay: #000000A6;
+  --bg-reverse-subtle: #FFFFFF1F;
+  --bg-disabled: #262A44;
+
+  --text: #E6E8F5;
+  --text-strong: #FFFFFF;
+  --text-neutral: #B5B9D3;
+  --text-moderate: #9498B8;
+  --text-primary: #A5ACFF;
+  --text-accent: #C4C9FF;
+  --text-blue: #7DB6F0;
+  --text-reverse: #FFFFFF;
+  --text-reverse-muted: #D2D0F5;
+  --text-disabled: #6B7092;
+
+  --border: #9498B8;
+  --border-minimal: #2D3150;
+  --border-moderate: #474C70;
+  --border-primary: #A5ACFF;
+  --divider: #474C70;
+  --divider-minimal: #262A44;
+  --divider-reverse: #FFFFFF2E;
+  --focus-indicator: #FBBF24;
+
+  --success: #1F9D50;  --success-text: #63D08D;  --success-bg: #12301F;
+  --critical: #C93A33; --critical-text: #FF8F86; --critical-bg: #3A1B1B;
+  --warning: #B8580F;  --warning-text: #F5A766;  --warning-bg: #3A2516;
+  --info: #2B8FC0;     --info-text: #7CC6EA;     --info-bg: #13293A;
+  --notification: #FF4D88;
+
+  --chart-1: #8F88F5;  --chart-2: #22C3D3;  --chart-3: #F5C242;  --chart-4: #B8B3F7;
+  --chart-5: #6A63E0;  --chart-6: #FF8A4C;  --chart-7: #3FC38B;  --chart-8: #7FA5D8;
+  --chart-other: #5B6080;  --chart-grid: #292D48;  --chart-axis: #9498B8;
+  --chart-value: #8F88F5;  --chart-value-area: #8F88F52E;
+  --chart-ref-line: #A9ADC8;
+  --chart-up: #63D08D;  --chart-down: #FF8F86;
+
+  --sector-politique: #EC6297;
+  --sector-international: #4A96EB;
+  --sector-europe: #8C9EFF;
+  --sector-economie: #D47F00;
+  --sector-climat: #3EA843;
+  --sector-science: #C96FE1;
+  --sector-ia: #7D98A5;
+  --sector-espace: #00A1B1;
+  --sector-aero: #F0673F;
+  --sector-metier: #979700;
+
+  --shadow-xs: 0 1px 3px 0 #00000066;
+  --shadow-s: 0 4px 16px 0 #00000059;
+  --shadow-m: 0 10px 60px 0 #00000080;
+  --shadow-l: 0 20px 80px 0 #00000099;
+  --shadow-sticky: 0 -2px 12px 0 #00000066;
+  --shadow-fab: 0 6px 20px 0 #00000080;
+
+  --input-border: 1px solid #9498B8;
+  --input-border-focus: 2px solid #FBBF24;
+  --input-border-error: 2px solid #FF8F86;
+  --toast-bg: #17803F;
+  --tooltip-bg: #2F2B7A;
+}
