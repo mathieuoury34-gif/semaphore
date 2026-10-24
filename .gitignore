@@ -10,4 +10,4 @@ semaphore-pour-claude/
 android-shell/node_modules/
 android-shell/android/
 android-shell/capacitor.config.json
-android-shell/*.apk
+*.apk

@@ -107,7 +107,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: semaphore-apk
-          path: android-shell/semaphore.apk
+          path: semaphore.apk
       - name: Release « apk » (lien de téléchargement stable)
         uses: softprops/action-gh-release@v2
         with:
@@ -117,5 +117,5 @@ jobs:
             APK construit automatiquement depuis ${{ github.sha }}.
             Installer « semaphore.apk » sur le téléphone (autoriser l'installation depuis le navigateur).
             L'interface se met à jour seule avec le site : réinstaller l'APK n'est utile que si la coque Android change.
-          files: android-shell/semaphore.apk
+          files: semaphore.apk
           make_latest: false
