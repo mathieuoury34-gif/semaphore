@@ -66,3 +66,56 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
+  # Application Android (APK) : coque Capacitor qui charge le site publié ci-dessus. Construite à chaque envoi de code
+  # (pas aux éditions planifiées) et publiée dans la release « apk » : lien de téléchargement stable, voir README.
+  apk:
+    needs: deploy
+    if: github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+    defaults:
+      run:
+        working-directory: android-shell
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      # le SDK Android est déjà installé sur les machines ubuntu-latest de GitHub (ANDROID_HOME)
+      - run: npm install --no-audit --no-fund
+      - name: Adresse de l'app web
+        run: |
+          OWNER=$(echo "${GITHUB_REPOSITORY_OWNER}" | tr '[:upper:]' '[:lower:]')
+          REPO="${GITHUB_REPOSITORY#*/}"
+          if [ "$REPO" = "$OWNER.github.io" ]; then echo "SITE_URL=https://$OWNER.github.io/" >> "$GITHUB_ENV"; else echo "SITE_URL=https://$OWNER.github.io/$REPO/" >> "$GITHUB_ENV"; fi
+      - run: npm run configure
+      - run: npx cap add android
+      - run: npm run patch
+      - run: npx cap sync android
+      - name: Construction de l'APK
+        working-directory: android-shell/android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon
+          cp app/build/outputs/apk/debug/app-debug.apk ../../semaphore.apk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: semaphore-apk
+          path: android-shell/semaphore.apk
+      - name: Release « apk » (lien de téléchargement stable)
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: apk
+          name: Sémaphore — APK Android
+          body: |
+            APK construit automatiquement depuis ${{ github.sha }}.
+            Installer « semaphore.apk » sur le téléphone (autoriser l'installation depuis le navigateur).
+            L'interface se met à jour seule avec le site : réinstaller l'APK n'est utile que si la coque Android change.
+          files: android-shell/semaphore.apk
+          make_latest: false

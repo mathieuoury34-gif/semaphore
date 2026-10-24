@@ -60,6 +60,7 @@ Ensuite, tout est automatique : une édition vers 6 h 50 et une vers 18 h 50 (he
 - **Android (Chrome)** : ouvre l'adresse, menu **⋮** › **Installer l'application**.
 - **iPhone (Safari)** : bouton **Partager** › **Sur l'écran d'accueil**.
 - **PC (Chrome ou Edge)** : icône d'installation à droite de la barre d'adresse.
+- **Android, vraie application (APK)** : la tâche « Publier Vigie » construit à chaque envoi de code une application Android (dossier `android-shell/`, Capacitor) qui charge le site publié. Lien de téléchargement stable : `https://github.com/<compte>/<dépôt>/releases/download/apk/semaphore.apk` (ouvrir ce lien dans Chrome sur le téléphone, autoriser l'installation depuis Chrome, installer). L'interface se met à jour avec le site : il n'y a pas à réinstaller l'APK. La connexion Google s'ouvre dans le navigateur du téléphone (Google refuse les vues intégrées) puis revient dans l'application par le lien `semaphore://auth`. L'APK est signée avec une clé de debug versionnée (`android-shell/keystore/`), sans valeur de sécurité : elle sert seulement à ce qu'une nouvelle version s'installe par-dessus l'ancienne. Les icônes se régénèrent avec `python3 scripts/tools/android-icons.py`.
 
 ---
 

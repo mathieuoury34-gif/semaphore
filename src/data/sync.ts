@@ -5,6 +5,7 @@ import { useSyncExternalStore } from 'react';
 import { FIREBASE_CONFIG } from './firebase-config';
 import { getDevicePrefs, getState, onStateChange, replaceState, setDevicePrefs } from './store';
 import { mergeState, sanitize, stable } from '../domain/state';
+import { native, siteUrl } from '../native/bridge';
 
 const SDK = 'https://www.gstatic.com/firebasejs/10.14.1/';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -101,6 +102,14 @@ export async function startSync(): Promise<void> {
       set({ ready: true, user: null, state: 'off' });
     }
   });
+  // APK : retour de la page de connexion ouverte dans le navigateur du téléphone
+  native.onAuthLink(async (idToken, accessToken) => {
+    try {
+      await fa.signInWithCredential(auth, fa.GoogleAuthProvider.credential(idToken || null, accessToken || null));
+    } catch (e) {
+      set({ error: 'Connexion impossible : ' + (e as Error).message, state: 'error' });
+    }
+  });
   onStateChange((s, origin) => {
     if (origin !== 'local' || !auth?.currentUser) return;
     if (stable(s) === lastSynced) return;
@@ -134,6 +143,8 @@ function returnedWithoutLogin(): { promise: Promise<void>; cancel: () => void } 
 
 export async function signIn(): Promise<void> {
   if (!(await init())) throw new Error('Synchronisation non configurée');
+  // APK : Google refuse la connexion dans une vue web intégrée → page de connexion dans le navigateur du téléphone
+  if (native.isApp()) { await native.openBrowser(siteUrl() + 'auth.html?app=1&lang=' + (document.documentElement.lang || 'fr')); return; }
   const provider = new fa.GoogleAuthProvider();
   provider.setCustomParameters({ prompt: 'select_account' });
   const back = returnedWithoutLogin();

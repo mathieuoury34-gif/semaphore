@@ -5,3 +5,9 @@ dist/
 .semaphore-cache/
 __pycache__/
 semaphore-pour-claude/
+
+# Coque Android : fichiers générés pendant la construction de l APK
+android-shell/node_modules/
+android-shell/android/
+android-shell/capacitor.config.json
+android-shell/*.apk

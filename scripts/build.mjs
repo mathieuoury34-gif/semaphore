@@ -11,7 +11,7 @@ cpSync('public', 'dist', { recursive: true });
 cpSync('index.html', 'dist/index.html');
 
 const options = {
-  entryPoints: { app: 'src/main.tsx' },
+  entryPoints: { app: 'src/main.tsx', auth: 'src/auth.ts' },
   bundle: true,
   outdir: 'dist',
   format: 'esm',
@@ -36,7 +36,7 @@ function walk(dir, base = dir) {
 
 function writeServiceWorker() {
   // les données (public/data/*.json) changent à chaque édition : jamais dans le cache de l'application, le service worker les gère à part
-  const files = walk('dist').filter((f) => !f.endsWith('.map') && f !== 'sw.js' && !f.startsWith('data/'));
+  const files = walk('dist').filter((f) => !f.endsWith('.map') && f !== 'sw.js' && f !== 'auth.html' && f !== 'auth.js' && !f.startsWith('data/'));
   const hash = createHash('sha256');
   for (const f of files) hash.update(readFileSync(join('dist', f)));
   const version = hash.digest('hex').slice(0, 10);
