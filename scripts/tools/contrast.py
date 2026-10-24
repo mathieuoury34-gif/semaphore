@@ -27,6 +27,7 @@ SECTORS = {
   'espace':        ('#00737D', '#00A1B1'),
   'aero':          ('#BD360F', '#F0673F'),
   'metier':        ('#6C6C00', '#979700'),
+  'emploi':        ('#795548', '#BCAAA4'),
 }
 LIGHT = ('#FFFFFF', '#F5F6FA'); DARK = ('#171A2E', '#1E2238')
 if len(sys.argv) > 1: SECTORS = json.loads(sys.argv[1])

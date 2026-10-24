@@ -1,14 +1,15 @@
 // État personnel (favoris, lus, préférences) et fusion entre appareils : les ajouts de chaque appareil s'additionnent,
 // aucune donnée n'est perdue quand on utilise le téléphone et l'ordinateur en même temps.
-import type { Fav, Prefs, Story, UserState } from './types';
-import { storyTitle, storyText, leadItem } from './select';
+import type { Fav, FavTx, Lang, Prefs, Story, UserState } from './types';
+import { LANGS } from './types';
+import { leadItem, storyText, storyTitle } from './select';
 import { clip } from './text';
 
 const READ_KEEP_MS = 14 * 86400000;
 const TOMB_KEEP_MS = 90 * 86400000;
 
 export function emptyState(): UserState {
-  return { v: 1, favorites: {}, read: {}, prefs: { followed: null, keywords: [], at: '' }, updatedAt: '' };
+  return { v: 1, favorites: {}, read: {}, prefs: { followed: null, keywords: [], lang: 'fr', off: {}, at: '' }, updatedAt: '' };
 }
 
 /** Stringify avec clés triées : deux états identiques donnent le même texte. */
@@ -42,6 +43,17 @@ export function mergeState(a: UserState, b: UserState, now = Date.now()): UserSt
   return { v: 1, favorites, read, prefs: structuredClone(prefs), updatedAt: a.updatedAt >= b.updatedAt ? a.updatedAt : b.updatedAt };
 }
 
+function sanitizeOff(raw: unknown): Record<string, string[]> {
+  const out: Record<string, string[]> = {};
+  if (!raw || typeof raw !== 'object') return out;
+  for (const [sec, list] of Object.entries(raw as Record<string, unknown>)) {
+    if (!Array.isArray(list)) continue;
+    const ids = [...new Set(list.filter((x): x is string => typeof x === 'string'))].slice(0, 400);
+    if (ids.length) out[sec] = ids;
+  }
+  return out;
+}
+
 /** Nettoie un état lu depuis le stockage ou le cloud. */
 export function sanitize(raw: unknown): UserState {
   const e = emptyState();
@@ -55,6 +67,8 @@ export function sanitize(raw: unknown): UserState {
     e.prefs = {
       followed: Array.isArray(r.prefs.followed) ? r.prefs.followed.filter((x) => typeof x === 'string') : null,
       keywords: Array.isArray(r.prefs.keywords) ? r.prefs.keywords.filter((x) => typeof x === 'string').slice(0, 30) : [],
+      lang: r.prefs.lang === 'en' ? 'en' : 'fr',
+      off: sanitizeOff(r.prefs.off),
       at: typeof r.prefs.at === 'string' ? r.prefs.at : '',
     };
   }
@@ -62,19 +76,33 @@ export function sanitize(raw: unknown): UserState {
   return e;
 }
 
-export function favFromStory(st: Story, sourceNames: (id: string) => string, now: string): Fav {
-  const lead = leadItem(st);
+export function favFromStory(st: Story, sourceNames: (id: string) => string, now: string, lang: Lang = 'fr'): Fav {
+  const tx: Partial<Record<Lang, FavTx>> = {};
+  for (const L of LANGS) {
+    if (!st.tx?.[L]) continue;
+    const lead = leadItem(st, L);
+    tx[L] = { title: storyTitle(st, L), summary: clip(storyText(st, L), 420), url: lead?.u ?? '', source: lead ? sourceNames(lead.s) : '' };
+  }
+  const main = tx[lang] ?? tx[st.lang === 'en' ? 'en' : 'fr'] ?? Object.values(tx)[0] ?? { title: st.title, summary: '', url: '', source: '' };
   return {
     id: st.id,
-    title: storyTitle(st),
-    summary: clip(storyText(st), 420),
+    title: main.title,
+    summary: main.summary,
     sector: st.sectors[0] ?? '',
     date: st.date,
-    url: lead?.u ?? '',
-    source: lead ? sourceNames(lead.s) : '',
-    lang: st.lang,
+    url: main.url,
+    source: main.source,
+    lang: tx[lang] ? lang : st.lang,
+    tx,
     savedAt: now,
   };
+}
+
+/** Copie d'un favori dans la langue choisie ; à défaut, sa langue d'origine (signalée par `other`). */
+export function favIn(f: Fav, lang: Lang): { title: string; summary: string; url: string; source: string; other: boolean } {
+  const t = f.tx?.[lang];
+  if (t) return { ...t, other: false };
+  return { title: f.title, summary: f.summary, url: f.url, source: f.source, other: !!f.lang && f.lang !== lang };
 }
 
 export function withFav(s: UserState, fav: Fav): UserState {

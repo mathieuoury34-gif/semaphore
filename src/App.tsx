@@ -8,6 +8,7 @@ import { FavoritesScreen } from './screens/Favorites';
 import { SettingsScreen } from './screens/Settings';
 import { StorySheet } from './screens/StorySheet';
 import { useFeed } from './data/feed';
+import { useLang } from './i18n';
 
 function Screen() {
   const route = useRoute();
@@ -24,6 +25,8 @@ export function App() {
   const route = useRoute();
   const f = useFeed();
   const sheet = route.query.get('sheet');
+  const lang = useLang();
+  useEffect(() => { document.documentElement.lang = lang; }, [lang]);
 
   useEffect(() => {
     if (!['une', 'secteurs', 'favoris', 'reglages'].includes(route.parts[0])) navigate(HOME, { replace: true });

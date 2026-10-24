@@ -62,6 +62,7 @@ export function matchSectors(compiled, title, snippet = '') {
  */
 export function sectorsFor(item, source, compiled) {
   const base = source.sectors || [];
+  if (source.exclusive ?? !!(source.type || source.jobs)) return { sectors: base.slice(0, 3), rel: 0.5 }; // offres d'emploi : secteur imposé par la source
   const matches = matchSectors(compiled, item.title, item.snippet);
   const score = (sec) => matches.find((m) => m.sector === sec)?.score ?? 0;
   let sectors;

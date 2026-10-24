@@ -1,11 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { activeFavorites, emptyState, favFromStory, mergeState, pruneRead, sanitize, stable, withFav, withoutFav } from '../src/domain/state';
+import { activeFavorites, emptyState, favFromStory, favIn, mergeState, pruneRead, sanitize, stable, withFav, withoutFav } from '../src/domain/state';
 import type { Story, UserState } from '../src/domain/types';
 
 const story = (id: string, extra: Partial<Story> = {}): Story => ({
-  id, title: 'Titre ' + id, sectors: ['espace'], date: '2026-10-23T10:00:00Z', first: '2026-10-23T09:00:00Z', lang: 'fr', snippet: 'Extrait', summary: 'Résumé du sujet ' + id,
-  summaryBy: 'extractive', score: 3, items: [{ u: 'https://x.test/' + id, t: 'Titre ' + id, s: 'src', d: '2026-10-23T10:00:00Z', l: 'fr' }], ...extra,
+  id, title: 'Titre ' + id, sectors: ['espace'], date: '2026-10-23T10:00:00Z', first: '2026-10-23T09:00:00Z', lang: 'fr', score: 3,
+  tx: { fr: { t: 'Titre ' + id, n: 'Extrait', s: 'Résumé du sujet ' + id, by: 'extractive', u: 'https://x.test/' + id, x: 'src' } }, items: [{ u: 'https://x.test/' + id, t: 'Titre ' + id, s: 'src', d: '2026-10-23T10:00:00Z', l: 'fr' }], ...extra,
 });
 const NOW = Date.parse('2026-10-24T12:00:00Z');
 const iso = (h: number) => new Date(NOW - h * 3600000).toISOString();
@@ -36,13 +36,15 @@ test('fusion : un retrait plus récent l\'emporte, un ajout plus récent aussi',
 });
 
 test('fusion : commutative et idempotente', () => {
-  const a: UserState = { ...withFav(emptyState(), favFromStory(story('a'), () => 'S', iso(5))), read: { x: iso(3), y: iso(9) }, prefs: { followed: ['espace'], keywords: ['ariane'], at: iso(8) }, updatedAt: iso(2) };
-  const b: UserState = { ...withFav(emptyState(), favFromStory(story('b'), () => 'S', iso(4))), read: { y: iso(2), z: iso(6) }, prefs: { followed: null, keywords: [], at: iso(1) }, updatedAt: iso(1) };
+  const a: UserState = { ...withFav(emptyState(), favFromStory(story('a'), () => 'S', iso(5))), read: { x: iso(3), y: iso(9) }, prefs: { followed: ['espace'], keywords: ['ariane'], lang: 'fr', off: {}, at: iso(8) }, updatedAt: iso(2) };
+  const b: UserState = { ...withFav(emptyState(), favFromStory(story('b'), () => 'S', iso(4))), read: { y: iso(2), z: iso(6) }, prefs: { followed: null, keywords: [], lang: 'en', off: { climat: ['x'] }, at: iso(1) }, updatedAt: iso(1) };
   const ab = mergeState(a, b, NOW), ba = mergeState(b, a, NOW);
   assert.equal(stable(ab), stable(ba));
   assert.equal(stable(mergeState(ab, ab, NOW)), stable(ab));
   assert.equal(ab.read.y, iso(2), 'la lecture la plus récente est gardée');
   assert.equal(ab.prefs.at, iso(1), 'les réglages les plus récents l\'emportent');
+  assert.equal(ab.prefs.lang, 'en', 'la langue choisie suit les réglages les plus récents');
+  assert.deepEqual(ab.prefs.off, { climat: ['x'] });
 });
 
 test('fusion : les vieilles lectures et pierres tombales disparaissent', () => {
@@ -62,6 +64,29 @@ test('sanitize : ignore les données invalides', () => {
   assert.equal(s.prefs.followed, null);
   assert.deepEqual(s.prefs.keywords, ['a']);
   assert.equal(stable(sanitize(null)), stable(emptyState()));
+});
+
+test('sanitize : langue et sources masquées', () => {
+  const s = sanitize({ prefs: { lang: 'en', off: { climat: ['a', 'a', 3, 'b'], vide: [], faux: 'x' }, followed: null, keywords: [] } });
+  assert.equal(s.prefs.lang, 'en');
+  assert.deepEqual(s.prefs.off, { climat: ['a', 'b'] });
+  assert.equal(sanitize({ prefs: { lang: 'de' } }).prefs.lang, 'fr', 'langue inconnue : français');
+  assert.equal(sanitize({}).prefs.lang, 'fr');
+});
+
+test('favori : une copie par langue disponible, affichée dans la langue choisie', () => {
+  const st = story('z', { lang: 'en', tx: {
+    en: { t: 'Moon lander awarded', s: 'English summary', by: 'llm', u: 'https://en.test/z', x: 'en-src' },
+    fr: { t: 'Atterrisseur lunaire attribué', s: 'Résumé français', by: 'llm', tr: 1, u: 'https://en.test/z', x: 'en-src' },
+  }, items: [{ u: 'https://en.test/z', t: 'Moon lander awarded', s: 'en-src', d: '2026-10-23T10:00:00Z', l: 'en' }] });
+  const f = favFromStory(st, (id) => 'Source ' + id, iso(1), 'fr');
+  assert.equal(f.title, 'Atterrisseur lunaire attribué');
+  assert.equal(favIn(f, 'en').title, 'Moon lander awarded');
+  assert.equal(favIn(f, 'en').other, false);
+  const old = { id: 'o', title: 'Ancien', summary: 's', sector: 'espace', date: iso(9), url: 'u', source: 'S', lang: 'fr', savedAt: iso(9) };
+  assert.equal(favIn(old, 'fr').other, false);
+  assert.equal(favIn(old, 'en').title, 'Ancien', 'un ancien favori reste lisible');
+  assert.equal(favIn(old, 'en').other, true, 'mais il est signalé comme étant dans une autre langue');
 });
 
 test('stable : indépendant de l\'ordre des clés', () => {

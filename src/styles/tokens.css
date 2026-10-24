@@ -124,6 +124,10 @@
   --sector-espace: #00737D;
   --sector-aero: #BD360F;
   --sector-metier: #6C6C00;
+  --sector-emploi: #795548;
+  --lean-left: #7E57C2;
+  --lean-center: #78909C;
+  --lean-right: #00897B;
 
   /* ---------- Rayons ---------- */
   --radius-2: 2px; --radius-4: 4px; --radius-6: 6px; --radius-8: 8px;
@@ -250,6 +254,10 @@
   --sector-espace: #00A1B1;
   --sector-aero: #F0673F;
   --sector-metier: #979700;
+  --sector-emploi: #BCAAA4;
+  --lean-left: #9575CD;
+  --lean-center: #90A4AE;
+  --lean-right: #26A69A;
 
   --shadow-xs: 0 1px 3px 0 #00000066;
   --shadow-s: 0 4px 16px 0 #00000059;

@@ -1,6 +1,7 @@
 // Lecture des flux RSS 2.0 / Atom / RDF (RSS 1.0) → éléments bruts normalisés.
 import { XMLParser } from 'fast-xml-parser';
 import { canonicalUrl, clip, decodeEntities, stripHtml } from './text.mjs';
+import { parseJobs } from './jobs.mjs';
 
 const parser = new XMLParser({
   ignoreAttributes: false,
@@ -54,6 +55,7 @@ function cleanSnippet(raw, sourceId) {
  * @returns {{ title: string, url: string, date: Date|null, snippet: string, text: string, categories: string[], announce?: string }[]}
  */
 export function parseFeed(xml, source = {}) {
+  if (source.type) return parseJobs(xml, source); // offres d'emploi (JSON ou XML des services de recrutement)
   let doc;
   try {
     doc = parser.parse(xml);
@@ -121,6 +123,7 @@ export function normalizeItems(raw, source, now = new Date()) {
       categories: r.categories.slice(0, 6),
       sourceId: source.id,
       lang: source.lang || 'fr',
+      ...(source.type || source.jobs || source.noCluster ? { noCluster: true } : {}),
     });
   }
   return items;

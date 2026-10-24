@@ -1,13 +1,13 @@
 # Vigie
 
-Revue de presse personnelle, par secteur, résumée en français. Deux éditions par jour (matin et soir), lisible sur téléphone et ordinateur, 0 € de coût.
+Revue de presse personnelle, par secteur, entièrement en français **ou** entièrement en anglais (au choix). Deux éditions par jour (matin et soir), lisible sur téléphone et ordinateur, 0 € de coût.
 
 - **À la une** : le brief du jour (lecture de 2 minutes), puis 3 points par secteur.
-- **Secteurs** : le fil complet de chaque secteur (Politique, International, Europe, Économie, Climat & énergie, Science, IA & numérique, Espace, Aéro & défense, Veille métier), tri « Importants » ou « Récents », recherche.
-- **Favoris** : les sujets mis de côté (gardés même quand ils sortent du fil) et des **mots suivis** (« Ariane 6 », « hydrogène »…).
-- **Réglages** : secteurs suivis, thème clair/sombre, compte Google (synchronisation), état des sources.
+- **Secteurs** : le fil complet de chaque secteur (Politique, International, Europe, Économie, Climat & énergie, Science, IA & numérique, Espace, Aéro & défense, Veille métier, **Emploi**), tri « Importants » ou « Récents », recherche. *Emploi* ne contient que des offres d'emploi et de stage (le reste de l'actualité spatiale est dans *Espace*).
+- **Favoris** : les sujets mis de côté (gardés même quand ils sortent du fil, dans les deux langues) et des **mots suivis** (« Ariane 6 », « hydrogène »…).
+- **Réglages** (dans cet ordre) : Compte & synchronisation, Thème, **Langue**, Secteurs suivis, **Sources** (tous les journaux suivis, secteur par secteur, avec une case à cocher pour chacun), Résumé, Données.
 
-Environ 120 sources en français et en anglais (presse, institutions, recherche, blogs). Un « robot » tourne sur GitHub deux fois par jour : il lit les flux RSS, regroupe les articles qui parlent du même événement, classe par secteur, résume, puis publie le tout sur GitHub Pages.
+Plus de 220 sources en français et en anglais (presse, institutions, recherche, blogs, offres d'emploi). Dans les secteurs où l'on peut être trompé par un seul angle (Politique, International, Europe, Économie, Climat & énergie), les sources couvrent **toutes les sensibilités**, de la gauche à la droite, plus des vérificateurs de faits ; une pastille indicative (Gauche, Centre gauche, Centre, Centre droit, Droite) accompagne chaque journal dans Réglages › Sources et sur la fiche d'un sujet, avec la répartition des sensibilités qui ont couvert ce sujet. Ces pastilles sont des repères, pas des verdicts. Un « robot » tourne sur GitHub deux fois par jour : il lit les flux RSS et les services d'offres d'emploi, regroupe les articles qui parlent du même événement, classe par secteur, résume, puis publie le tout sur GitHub Pages.
 
 ---
 
@@ -63,9 +63,11 @@ Ensuite, tout est automatique : une édition vers 6 h 50 et une vers 18 h 50 (he
 
 ---
 
-## 3. Résumés rédigés en français par une IA (gratuit, recommandé)
+## 3. Langue et résumés par une IA (gratuit, recommandé)
 
-Sans IA, Vigie affiche des **extraits** des articles ; les sujets en anglais restent en anglais (repérés par une pastille « EN »). Avec une IA gratuite, chaque sujet reçoit un titre français et un résumé de 2-3 phrases, et les puces de « À la une » sont rédigées.
+**Une seule langue à la fois.** Réglages › **Langue** : Français ou English. Tout ce qui s'affiche (boutons, titres, résumés, brief) est alors dans cette langue, sans mélange. Le choix est mémorisé et suit ton compte (synchronisation).
+
+**Ce que l'IA change.** Sans clé d'IA, Vigie ne peut rien traduire : il affiche des **extraits** des articles et, en mode français, uniquement les sujets publiés par des journaux français (en mode anglais, uniquement ceux publiés par des journaux anglophones). La liste est donc plus courte. Avec une IA gratuite, chaque sujet reçoit un titre et un résumé de 2-3 phrases **dans les deux langues** en un seul appel, les sujets étrangers sont traduits (pastille « Traduit »), un sujet couvert par un journal français et un journal anglais est fusionné, et les puces de « À la une » sont rédigées.
 
 **Option A — Gemini (Google AI Studio), la plus simple et la plus généreuse.**
 
@@ -77,7 +79,7 @@ La clé reste dans GitHub : ne la colle jamais dans un message, un fichier du pr
 
 **Option B — GitHub Models** : rien à faire. Si aucune clé Gemini n'est définie, le robot essaie les modèles gratuits de GitHub avec le jeton du workflow (permission `models: read` déjà prévue). Le palier gratuit est très limité (environ 15 requêtes par minute et 150 par jour, **à vérifier**) : il suffit pour une partie des sujets seulement.
 
-Dans tous les cas, si l'IA est indisponible ou son quota épuisé, l'édition est publiée quand même avec des extraits. Réglages › **Résumés** indique le mode de la dernière édition. Pour couper toute IA : variable `VIGIE_NO_LLM` = `1`.
+Dans tous les cas, si l'IA est indisponible ou son quota épuisé, l'édition est publiée quand même avec des extraits. Réglages › **Résumé** indique le mode de la dernière édition. Pour couper toute IA : variable `VIGIE_NO_LLM` = `1`.
 
 ---
 
@@ -108,12 +110,13 @@ Tout se règle dans `data-src/` (puis `git push`, ou « Run workflow » pour voi
 
 | Fichier | Contenu |
 |---|---|
-| `sectors.json` | les secteurs (nom, icône, nombre de résumés par édition) |
-| `sources.json` | les sources : `url` du flux, `sectors`, `lang`, `weight` (poids dans le classement), `enabled: false` pour en couper une |
+| `sectors.json` | les secteurs (nom français et `en` anglais, icône, nombre de résumés par édition, `opinion: true` pour afficher les sensibilités) |
+| `sources.json` | les sources : `url` du flux, `sectors`, `lang`, `kind`, `weight` (poids dans le classement), `lean` (sensibilité indicative : `left`, `center-left`, `center`, `center-right`, `right`), `enabled: false` pour en couper une |
 | `rules.json` | les mots-clés qui rattachent un article à un secteur (`strong` : terme décisif ; `any` : indice) |
 
 - **Tester une source** : `node scripts/collect/probe.mjs id-de-la-source` (sans argument : toutes).
-- **Ajouter un secteur** (ex. « Emploi ») : une entrée dans `sectors.json`, des sources et des règles dans les deux autres fichiers, et une couleur `--sector-<id>` (clair et sombre) dans `src/styles/tokens.css` ; `python3 scripts/tools/contrast.py` vérifie le contraste.
+- **Ajouter une entreprise dans Emploi** : une ligne dans `sources.json` avec `"sectors": ["emploi"]`, `"type"` (`greenhouse`, `ashby`, `lever` ou `personio`), `"board"` (l'identifiant de l'entreprise dans l'adresse de sa page « Carrières », ex. `isaraerospace`) et `"company"`. Les mots qui décident si une offre est retenue (ingénieur, simulation, stage…) sont dans `rules.json` › `jobs` (et, pour une entreprise précise, `include` / `exclude` / `locations`).
+- **Ajouter un secteur** (ex. « Santé ») : une entrée dans `sectors.json`, des sources et des règles dans les deux autres fichiers, et une couleur `--sector-<id>` (clair et sombre) dans `src/styles/tokens.css` ; `python3 scripts/tools/contrast.py` vérifie le contraste.
 - **Changer la palette** : uniquement `src/styles/tokens.css`.
 
 ---
@@ -121,8 +124,8 @@ Tout se règle dans `data-src/` (puis `git push`, ou « Run workflow » pour voi
 ## 6. À savoir
 
 - Le robot ne lit que ce que les sources publient dans leurs flux RSS (titre, chapeau) et, pour les sujets retenus, le texte accessible de l'article. Les articles payants donnent peu de texte : le résumé est alors plus court, voire absent.
-- Quelques sources peuvent refuser les serveurs de GitHub ou être en panne : **Réglages › Sources** liste celles qui ont échoué à la dernière édition. L'édition est publiée quand même.
-- Les sujets sont conservés 7 jours. Un favori garde sa propre copie (titre, résumé, lien).
+- Quelques sources peuvent refuser les serveurs de GitHub ou être en panne : **Réglages › Sources** signale par un point orange celles qui ont échoué à la dernière édition. L'édition est publiée quand même.
+- Les sujets sont conservés 7 jours (30 jours pour les offres d'emploi). Un favori garde sa propre copie (titre, résumé, lien).
 - Les résumés automatiques peuvent se tromper : le lien vers l'article d'origine est toujours à portée.
 - Vigie est pour un usage personnel ; les titres et extraits appartiennent à leurs éditeurs.
 
@@ -133,7 +136,8 @@ Tout se règle dans `data-src/` (puis `git push`, ou « Run workflow » pour voi
 | Le workflow est rouge | Onglet **Actions** › clique l'exécution › l'étape en échec. Pages non activé : refais l'étape 2 puis **Re-run all jobs**. |
 | « Pas de nouvelle édition depuis… » | Le robot n'a pas publié depuis longtemps : **Actions** › **Run workflow**, et regarde si l'exécution précédente a échoué. |
 | L'application affiche une ancienne version | **Réglages › Données › Recharger l'application**. |
-| Tout est en anglais ou en extraits | Aucune clé IA, ou quota épuisé : voir la section 3. |
+| Peu de sujets, ou seulement des extraits | Aucune clé IA, ou quota épuisé : sans IA, seuls les sujets publiés dans la langue choisie s'affichent, en extraits. Voir la section 3. |
+| Un journal ne m'intéresse pas dans un secteur | Réglages › Sources › le secteur › décoche le journal (il reste visible dans les autres secteurs). |
 | Le bouton Google ne fait rien sur téléphone | Autorise les fenêtres surgissantes pour le site, ou ouvre Vigie dans Chrome plutôt que dans une application intégrée. |
 
 ## Structure

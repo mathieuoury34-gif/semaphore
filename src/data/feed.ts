@@ -2,6 +2,7 @@
 import { useSyncExternalStore } from 'react';
 import type { Digest, Feed, SourceInfo, Status, Story } from '../domain/types';
 import { ageHours } from '../domain/format';
+import { normalizeDigest, normalizeFeed } from '../domain/migrate';
 
 export interface FeedState {
   phase: 'loading' | 'ready' | 'error';
@@ -34,12 +35,14 @@ export function loadData(opts: { force?: boolean } = {}): Promise<void> {
   set({ refreshing: true });
   inflight = (async () => {
     try {
-      const [feed, digest, srcs] = await Promise.all([
+      const [rawFeed, rawDigest, srcs] = await Promise.all([
         getJSON<Feed>('feed', !!opts.force),
         getJSON<Digest>('digest', !!opts.force).catch(() => null),
         getJSON<{ sources: SourceInfo[] }>('sources', !!opts.force).catch(() => ({ sources: [] as SourceInfo[] })),
       ]);
-      if (!feed || !Array.isArray(feed.stories)) throw new Error('feed.json illisible');
+      if (!rawFeed || !Array.isArray(rawFeed.stories)) throw new Error('feed.json illisible');
+      const feed = normalizeFeed(rawFeed);
+      const digest = normalizeDigest(rawDigest);
       set({
         phase: 'ready', feed, digest, error: '', refreshing: false, fetchedAt: Date.now(),
         sources: new Map(srcs.sources.map((s) => [s.id, s])),
@@ -47,7 +50,7 @@ export function loadData(opts: { force?: boolean } = {}): Promise<void> {
       });
     } catch (e) {
       const msg = (e as Error).message || 'erreur réseau';
-      set({ phase: state.feed ? 'ready' : 'error', error: navigator.onLine === false ? 'Hors connexion' : msg, refreshing: false });
+      set({ phase: state.feed ? 'ready' : 'error', error: navigator.onLine === false ? 'offline' : msg, refreshing: false });
     } finally {
       inflight = null;
     }

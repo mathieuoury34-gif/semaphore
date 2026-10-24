@@ -3,7 +3,8 @@ import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode } fro
 import { Icon, Logo } from './icons';
 import { back, closeSheet, navigate, tabOf, useRoute, type Tab } from './router';
 import { loadData, staleHours, useFeed } from '../data/feed';
-import { dateTimeFr, relTime } from '../domain/format';
+import { dateTime, relTime } from '../domain/format';
+import { useT, type Key } from '../i18n';
 
 // ------------------------------------------------------------------ en-têtes
 export function useScrolled(threshold = 20): boolean {
@@ -21,14 +22,16 @@ export function useScrolled(threshold = 20): boolean {
 
 export function useUpdatedText(): string {
   const f = useFeed();
-  if (!f.feed) return f.phase === 'error' ? 'Données indisponibles' : 'Chargement…';
-  return `Mis à jour ${relTime(f.feed.generatedAt)}`;
+  const { t, lang } = useT();
+  if (!f.feed) return f.phase === 'error' ? t('common.unavailable') : t('common.loading');
+  return t('common.updated', { when: relTime(f.feed.generatedAt, lang) });
 }
 
 export function AppHeader({ title, actions }: { title: string; actions?: ReactNode }) {
   const compact = useScrolled();
   const updated = useUpdatedText();
   const f = useFeed();
+  const { t } = useT();
   return (
     <header className={'app-header' + (compact ? ' compact' : '')}>
       <div className="bar">
@@ -38,7 +41,7 @@ export function AppHeader({ title, actions }: { title: string; actions?: ReactNo
         </div>
         <div className="actions">
           {actions}
-          <button type="button" className={'icon-btn' + (f.refreshing ? ' spin' : '')} aria-label="Actualiser" onClick={() => void loadData({ force: true })} disabled={f.refreshing}>
+          <button type="button" className={'icon-btn' + (f.refreshing ? ' spin' : '')} aria-label={t('common.refresh')} onClick={() => void loadData({ force: true })} disabled={f.refreshing}>
             <Icon name="refresh" />
           </button>
         </div>
@@ -48,10 +51,11 @@ export function AppHeader({ title, actions }: { title: string; actions?: ReactNo
 }
 
 export function SubHeader({ title, fallback, right }: { title: string; fallback: string; right?: ReactNode }) {
+  const { t } = useT();
   return (
     <header className="sub-header bordered">
       <div className="bar">
-        <button type="button" className="icon-btn" aria-label="Retour" onClick={() => back(fallback)}>
+        <button type="button" className="icon-btn" aria-label={t('common.back')} onClick={() => back(fallback)}>
           <Icon name="back" />
         </button>
         <h1>{title}</h1>
@@ -64,21 +68,23 @@ export function SubHeader({ title, fallback, right }: { title: string; fallback:
 /** Bandeau : échec du dernier chargement, ou données anciennes (le robot n'a pas publié depuis longtemps). */
 export function DataBanner() {
   const f = useFeed();
+  const { t, lang } = useT();
   if (f.error && f.feed) {
     return (
       <div role="alert" className="banner-error">
         <Icon name="alert" size={20} />
-        <span>{f.error === 'Hors connexion' ? 'Hors connexion' : 'Actualisation impossible'} – données du {dateTimeFr(f.feed.generatedAt)}</span>
-        <button type="button" onClick={() => void loadData({ force: true })}>Réessayer</button>
+        <span>{t('banner.old', { why: f.error === 'offline' ? t('banner.offline') : t('banner.failed'), date: dateTime(f.feed.generatedAt, lang) })}</span>
+        <button type="button" onClick={() => void loadData({ force: true })}>{t('common.retry')}</button>
       </div>
     );
   }
   const h = staleHours(f);
   if (f.feed && h > 30) {
+    const d = Math.round(h / 24);
     return (
       <div role="status" className="banner-info">
         <Icon name="info" size={20} />
-        <span>Pas de nouvelle édition depuis {Math.round(h / 24) >= 2 ? Math.round(h / 24) + ' jours' : Math.round(h) + ' h'} (dernière : {dateTimeFr(f.feed.generatedAt)}).</span>
+        <span>{t('banner.stale', { ago: d >= 2 ? t('ago.days', { n: d }) : t('ago.hours', { n: Math.round(h) }), date: dateTime(f.feed.generatedAt, lang) })}</span>
         <span />
       </div>
     );
@@ -113,33 +119,34 @@ export function Empty({ icon = 'inbox', title, text, action }: { icon?: string; 
 }
 
 // ------------------------------------------------------------------ navigation principale
-const TABS: { id: Exclude<Tab, 'none'>; label: string; to: string }[] = [
-  { id: 'une', label: 'À la une', to: '/une' },
-  { id: 'secteurs', label: 'Secteurs', to: '/secteurs' },
-  { id: 'favoris', label: 'Favoris', to: '/favoris' },
-  { id: 'reglages', label: 'Réglages', to: '/reglages' },
+const TABS: { id: Exclude<Tab, 'none'>; label: Key; to: string }[] = [
+  { id: 'une', label: 'tab.une', to: '/une' },
+  { id: 'secteurs', label: 'tab.secteurs', to: '/secteurs' },
+  { id: 'favoris', label: 'tab.favoris', to: '/favoris' },
+  { id: 'reglages', label: 'tab.reglages', to: '/reglages' },
 ];
 
 export function TabBar() {
   const route = useRoute();
+  const { t } = useT();
   const active = tabOf(route.path);
   const go = (to: string) => (e: React.MouseEvent) => { e.preventDefault(); if (route.path !== to) navigate(to); };
   return (
     <>
-      <nav aria-label="Navigation principale" className="tabbar">
-        {TABS.map((t) => (
-          <a key={t.id} href={'#' + t.to} aria-current={active === t.id ? 'page' : undefined} onClick={go(t.to)}>
-            <span className="pill"><Icon name={t.id} /></span>
-            {t.label}
+      <nav aria-label={t('nav.main')} className="tabbar">
+        {TABS.map((tab) => (
+          <a key={tab.id} href={'#' + tab.to} aria-current={active === tab.id ? 'page' : undefined} onClick={go(tab.to)}>
+            <span className="pill"><Icon name={tab.id} /></span>
+            {t(tab.label)}
           </a>
         ))}
       </nav>
-      <aside className="sidenav" aria-label="Navigation principale">
+      <aside className="sidenav" aria-label={t('nav.main')}>
         <Logo size={20} />
         <nav>
-          {TABS.map((t) => (
-            <a key={t.id} href={'#' + t.to} aria-current={active === t.id ? 'page' : undefined} onClick={go(t.to)}>
-              <Icon name={t.id} />{t.label}
+          {TABS.map((tab) => (
+            <a key={tab.id} href={'#' + tab.to} aria-current={active === tab.id ? 'page' : undefined} onClick={go(tab.to)}>
+              <Icon name={tab.id} />{t(tab.label)}
             </a>
           ))}
         </nav>
@@ -156,6 +163,7 @@ function SideFoot() {
 // ------------------------------------------------------------------ feuilles
 export function Sheet({ title, children, footer, full, onClose = closeSheet, head }: { title: string; children: ReactNode; footer?: ReactNode; full?: boolean; onClose?: () => void; head?: ReactNode }) {
   const ref = useRef<HTMLElement>(null);
+  const { t } = useT();
   useEffect(() => {
     const prev = document.activeElement as HTMLElement | null;
     ref.current?.focus();
@@ -172,7 +180,7 @@ export function Sheet({ title, children, footer, full, onClose = closeSheet, hea
         <div className="sheet-head" style={full ? { borderBottom: '1px solid var(--divider-minimal)' } : undefined}>
           <div className="between">
             <h2 className="t-h3 sheet-title">{title}</h2>
-            <button type="button" className="icon-btn neutral" aria-label="Fermer" onClick={onClose} style={{ marginRight: 'calc(-1 * var(--space-10))' }}>
+            <button type="button" className="icon-btn neutral" aria-label={t('common.close')} onClick={onClose} style={{ marginRight: 'calc(-1 * var(--space-10))' }}>
               <Icon name="close" />
             </button>
           </div>
@@ -198,12 +206,13 @@ export function showToast(text: string, opts: { undo?: () => void; error?: boole
 }
 export function ToastHost() {
   const t = useSyncExternalStore((l) => { toastListeners.add(l); return () => toastListeners.delete(l); }, () => toast);
+  const tr = useT();
   if (!t) return null;
   return (
     <div role="status" className={'toast' + (t.error ? ' error' : '')} key={t.id}>
       <Icon name={t.error ? 'alert' : 'success'} />
       <span className="t-strong">{t.text}</span>
-      {t.undo ? <button type="button" onClick={() => { t.undo!(); toast = null; toastListeners.forEach((l) => l()); }}>Annuler</button> : <span />}
+      {t.undo ? <button type="button" onClick={() => { t.undo!(); toast = null; toastListeners.forEach((l) => l()); }}>{tr.t('common.undo')}</button> : <span />}
     </div>
   );
 }

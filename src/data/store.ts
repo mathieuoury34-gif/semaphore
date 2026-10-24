@@ -1,6 +1,6 @@
 // État personnel persisté localement (localStorage) + synchronisation cloud facultative (voir sync.ts).
 import { useSyncExternalStore } from 'react';
-import type { Fav, Story, UserState } from '../domain/types';
+import type { Fav, Lang, Story, UserState } from '../domain/types';
 import { emptyState, favFromStory, pruneRead, sanitize, withFav, withoutFav } from '../domain/state';
 
 const KEY = 'vigie:state';
@@ -65,11 +65,11 @@ export function markAllRead(ids: string[]): void {
 export function resetRead(): void {
   update((s) => ({ ...s, read: {} }));
 }
-export function toggleFavorite(st: Story, sourceName: (id: string) => string): boolean {
+export function toggleFavorite(st: Story, sourceName: (id: string) => string, lang: Lang = state.prefs.lang): boolean {
   const now = new Date().toISOString();
   const f = state.favorites[st.id];
   const on = !!f && (!f.removedAt || f.savedAt > f.removedAt);
-  update((s) => (on ? withoutFav(s, st.id, now) : withFav(s, favFromStory(st, sourceName, now))));
+  update((s) => (on ? withoutFav(s, st.id, now) : withFav(s, favFromStory(st, sourceName, now, lang))));
   return !on;
 }
 export function removeFavorite(id: string): void {
@@ -83,6 +83,22 @@ export function setFollowed(followed: string[] | null): void {
 }
 export function setKeywords(keywords: string[]): void {
   update((s) => ({ ...s, prefs: { ...s.prefs, keywords, at: new Date().toISOString() } }));
+}
+export function setLang(lang: Lang): void {
+  if (state.prefs.lang === lang) return;
+  update((s) => ({ ...s, prefs: { ...s.prefs, lang, at: new Date().toISOString() } }));
+}
+/** Masque (off = true) ou réaffiche un journal dans un secteur précis. */
+export function setSourceOff(sector: string, source: string, off: boolean): void {
+  setSectorOff(sector, off ? [...new Set([...(state.prefs.off[sector] ?? []), source])] : (state.prefs.off[sector] ?? []).filter((x) => x !== source));
+}
+/** Remplace la liste des journaux masqués d'un secteur (liste vide : tous visibles). */
+export function setSectorOff(sector: string, ids: string[]): void {
+  update((s) => {
+    const off = { ...s.prefs.off };
+    if (ids.length) off[sector] = ids; else delete off[sector];
+    return { ...s, prefs: { ...s.prefs, off, at: new Date().toISOString() } };
+  });
 }
 
 // ------------------------------------------------------------ préférences propres à l'appareil (non synchronisées)

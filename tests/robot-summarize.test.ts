@@ -34,19 +34,27 @@ test('parseJSONLoose : JSON entouré de clôtures ou de texte', () => {
 
 test('readSummaries : ignore les identifiants inconnus et les résumés trop courts', () => {
   const ok = 'Le gouvernement a présenté son plan de relance doté de dix milliards d’euros, destiné aux PME.';
-  const res = readSummaries({ items: [{ id: 'a', titre: 'Plan de relance', resume: ok }, { id: 'zz', resume: ok }, { id: 'b', resume: 'court' }] }, new Set(['a', 'b']));
-  assert.equal(res.size, 1);
-  assert.equal(res.get('a')!.titre, 'Plan de relance');
+  const en = 'The government unveiled a recovery plan worth ten billion euros, aimed at small businesses.';
+  const res = readSummaries({ items: [
+    { id: 'a', fr: { titre: 'Plan de relance', resume: ok }, en: { titre: 'Recovery plan', resume: en } },
+    { id: 'zz', fr: { resume: ok } },
+    { id: 'b', fr: { resume: 'court' }, en: { resume: 'short' } },
+    { id: 'c', fr: { titre: 'Seulement en français', resume: ok }, en: { resume: 'too short' } },
+  ] }, new Set(['a', 'b', 'c']));
+  assert.equal(res.size, 2, 'a et c seulement');
+  assert.equal(res.get('a')!.fr!.titre, 'Plan de relance');
+  assert.equal(res.get('a')!.en!.titre, 'Recovery plan');
+  assert.ok(res.get('c')!.fr && !res.get('c')!.en, 'une langue invalide est omise sans perdre l’autre');
 });
 
 test('plainBrief : pas deux fois le même sujet', () => {
   const digests: any = {
-    politique: [{ text: 'A', ids: ['s1'] }],
-    international: [{ text: 'A', ids: ['s1'] }, { text: 'B', ids: ['s2'] }],
-    europe: [{ text: 'A', ids: ['s1'] }],
+    politique: [{ t: { fr: 'A' }, ids: ['s1'] }],
+    international: [{ t: { fr: 'A' }, ids: ['s1'] }, { t: { fr: 'B' }, ids: ['s2'] }],
+    europe: [{ t: { fr: 'A' }, ids: ['s1'] }],
   };
   const b = plainBrief(['politique', 'international', 'europe'], digests);
-  assert.deepEqual(b.map((x) => x.text), ['A', 'B']);
+  assert.deepEqual(b.map((x) => x.t.fr), ['A', 'B']);
 });
 
 test('LLMClient : réessaie après un 429, abandonne un fournisseur épuisé, bascule sur le suivant', async () => {
