@@ -43,7 +43,8 @@ async function init(): Promise<boolean> {
     db = f.initializeFirestore(fbApp, { localCache: f.persistentLocalCache({ tabManager: f.persistentMultipleTabManager() }) });
     return true;
   } catch (e) {
-    set({ ready: true, state: 'error', error: 'Service de synchronisation injoignable' });
+    // hors connexion : rien d'anormal, la synchronisation démarrera au retour du réseau (voir startSync)
+    set(navigator.onLine === false ? { ready: true, state: 'off', error: '' } : { ready: true, state: 'error', error: 'Service de synchronisation injoignable' });
     console.warn('[sync] init', e);
     return false;
   }
@@ -91,7 +92,11 @@ function watch(uid: string) {
 }
 
 export async function startSync(): Promise<void> {
-  if (!(await init())) return;
+  if (!(await init())) {
+    // SDK injoignable (hors connexion au démarrage) : nouvel essai au retour du réseau
+    if (configured) window.addEventListener('online', () => void startSync(), { once: true });
+    return;
+  }
   fa.getRedirectResult(auth).catch(() => undefined);
   fa.onAuthStateChanged(auth, (u: Any) => {
     if (u) {

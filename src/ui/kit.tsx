@@ -3,6 +3,7 @@ import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode } fro
 import { Icon, Logo, Picto } from './icons';
 import { back, closeSheet, navigate, tabOf, useRoute, type Tab } from './router';
 import { loadData, staleHours, useFeed } from '../data/feed';
+import { downloadUpdate, useUpdateAvailable } from '../data/appUpdate';
 import { dateTime, relTime } from '../domain/format';
 import { useT, type Key } from '../i18n';
 
@@ -70,6 +71,16 @@ export function SubHeader({ title, fallback, right }: { title: string; fallback:
 export function DataBanner() {
   const f = useFeed();
   const { t, lang } = useT();
+  const update = useUpdateAvailable();
+  if (update) {
+    return (
+      <div role="status" className="banner-info">
+        <Icon name="info" size={20} />
+        <span>{t('update.available')}</span>
+        <button type="button" onClick={downloadUpdate}>{t('update.get')}</button>
+      </div>
+    );
+  }
   if (f.error && f.feed) {
     return (
       <div role="alert" className="banner-error">

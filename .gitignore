@@ -11,3 +11,4 @@ android-shell/node_modules/
 android-shell/android/
 android-shell/capacitor.config.json
 *.apk
+android-shell/www/

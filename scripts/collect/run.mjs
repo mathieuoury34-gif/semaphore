@@ -6,7 +6,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { getText } from './http.mjs';
 import { normalizeItems, parseFeed } from './feed.mjs';
-import { compileRules, isExcluded, sectorsFor } from './classify.mjs';
+import { compileRules, isExcluded, reclassifyStory, REFINE, sectorsFor } from './classify.mjs';
 import { attach, mergeAcrossLanguages, refreshLead } from './cluster.mjs';
 import { fetchWorkday, jobFilter } from './jobs.mjs';
 import { loadRules, loadSectors, loadSources } from './config.mjs';
@@ -72,6 +72,16 @@ async function loadPrev() {
 
 const prev = await loadPrev();
 let stories = Array.isArray(prev.feed?.stories) && (prev.feed.v === SCHEMA || prev.feed.v === 1) ? prev.feed.stories.map(migrateStory) : [];
+// reclassement : à chaque changement des règles de classement (refine.version), les sujets déjà publiés sont reclassés d'après leurs articles
+const validSectors = new Set(sectors.map((s) => s.id));
+const CV = rules[REFINE].version;
+let reclassified = 0;
+for (const st of stories) {
+  if (st.cv === CV && st.sectors.every((x) => validSectors.has(x))) continue;
+  reclassifyStory(st, sourceMap, rules, validSectors);
+  reclassified++;
+}
+if (reclassified) log(`  ${reclassified} sujets reclassés (règles de classement v${CV})`);
 // règles « exclude » : un sujet déjà publié perd son secteur secondaire devenu hors sujet (ex. cryogénie dans Climat & énergie)
 for (const st of stories) {
   const text = st.tx ? Object.values(st.tx).map((x) => x?.n || '').join(' ') : '';
@@ -153,8 +163,9 @@ const touched = attach(stories, newItems, sourceMap);
 for (const st of touched) refreshLead(st, sourceMap);
 for (const st of stories) refreshTx(st, sourceMap, raw); // blocs natifs par langue (titre, extrait, article de tête)
 stories = stories.filter((st) => Date.parse(st.date) >= cutoffFor(keepDays(st.sectors)));
+for (const st of stories) st.cv = CV;
 rankStories(stories, sourceMap, now.getTime());
-stories = capPerSector(stories, MAX_PER_SECTOR);
+stories = capPerSector(stories, MAX_PER_SECTOR, Object.fromEntries(sectors.filter((s) => s.capFactor).map((s) => [s.id, s.capFactor])));
 const byId = new Map(stories.map((s) => [s.id, s]));
 log(`Sujets : ${stories.length} (${touched.length} créés ou enrichis)`);
 

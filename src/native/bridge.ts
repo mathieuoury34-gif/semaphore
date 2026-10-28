@@ -11,13 +11,27 @@ function plugin(name: string): Any {
   return cap()?.Plugins?.[name];
 }
 
-/** Adresse publique de l'app web (GitHub Pages), d'où l'APK charge l'interface. */
+/**
+ * Adresse publique de l'app web (GitHub Pages), avec « / » final. Dans l'APK, l'application est embarquée (adresse locale) :
+ * c'est alors l'adresse du site publié, d'où viennent les données et la page de connexion Google.
+ */
 export function siteUrl(): string {
   if (typeof location === 'undefined') return '';
+  if (typeof __SITE_URL__ === 'string' && __SITE_URL__ && cap()?.isNativePlatform?.()) return __SITE_URL__;
   const u = new URL(location.href);
   u.hash = '';
   u.search = '';
   return u.href.replace(/[^/]*$/, '');
+}
+
+/** Adresse de téléchargement de l'APK (release « apk » du dépôt), déduite de l'adresse GitHub Pages https://<compte>.github.io/<dépôt>/. */
+export function apkUrl(): string {
+  try {
+    const u = new URL(siteUrl());
+    const owner = u.hostname.split('.')[0];
+    const repo = u.pathname.split('/').filter(Boolean)[0];
+    return owner && repo ? `https://github.com/${owner}/${repo}/releases/download/apk/semaphore.apk` : '';
+  } catch { return ''; }
 }
 
 const authCallbacks = new Set<(idToken: string, accessToken: string) => void>();

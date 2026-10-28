@@ -17,6 +17,7 @@ const FR = {
   'common.clear': 'Effacer', 'common.search': 'Rechercher', 'common.all': 'Tout', 'common.fr': 'Français', 'common.en': 'English',
   'banner.offline': 'Hors connexion', 'banner.failed': 'Actualisation impossible', 'banner.old': '{why} – données du {date}',
   'banner.stale': 'Pas de nouvelle édition depuis {ago} (dernière : {date}).',
+  'update.available': "Une nouvelle version de l'application est disponible.", 'update.get': 'Télécharger',
   'ago.days': ['{n} jour', '{n} jours'], 'ago.hours': '{n} h',
   'sources.n': ['{n} source', '{n} sources'], 'articles.n': ['{n} article', '{n} articles'],
   // ---- À la une
@@ -95,6 +96,7 @@ const EN: Record<keyof typeof FR, Val> = {
   'common.clear': 'Clear', 'common.search': 'Search', 'common.all': 'All', 'common.fr': 'Français', 'common.en': 'English',
   'banner.offline': 'Offline', 'banner.failed': 'Could not refresh', 'banner.old': '{why} – data from {date}',
   'banner.stale': 'No new edition for {ago} (latest: {date}).',
+  'update.available': 'A new version of the app is available.', 'update.get': 'Download',
   'ago.days': ['{n} day', '{n} days'], 'ago.hours': '{n} h',
   'sources.n': ['{n} source', '{n} sources'], 'articles.n': ['{n} article', '{n} articles'],
   'brief.title': 'Top stories', 'brief.label': "Today's brief", 'brief.essential': 'The essentials in 2 minutes',

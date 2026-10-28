@@ -68,7 +68,7 @@ export function migrateStory(st) {
 export function publicStory(st) {
   return {
     id: st.id, title: st.title, lang: st.lang, sectors: st.sectors, date: st.date, first: st.first,
-    score: st.score, votes: st.votes, rel: st.rel ?? 0,
+    score: st.score, votes: st.votes, rel: st.rel ?? 0, ...(st.cv ? { cv: st.cv } : {}),
     ...(st.noSummary ? { noSummary: true } : {}),
     tx: st.tx,
     items: st.items.slice().sort((a, b) => b.d.localeCompare(a.d)).slice(0, 12),
@@ -76,7 +76,7 @@ export function publicStory(st) {
 }
 
 /** Garde les meilleurs sujets de chaque secteur (un secteur très prolifique n'étouffe pas les autres ; les offres d'emploi ont un quota plus large). */
-export function capPerSector(list, max) {
+export function capPerSector(list, max, factors = {}) {
   const groups = new Map();
   for (const st of list) {
     const k = st.sectors[0] ?? '';
@@ -85,7 +85,7 @@ export function capPerSector(list, max) {
   }
   const keep = [];
   for (const [k, g] of groups) {
-    const cap = k === 'emploi' ? Math.round(max * 1.6) : max;
+    const cap = Math.round(max * (factors[k] ?? (k === 'emploi' ? 1.6 : 1))); // quota élargi pour les secteurs qui en réclament (sectors.json › capFactor)
     keep.push(...g.sort((a, b) => b.score - a.score || b.date.localeCompare(a.date)).slice(0, cap));
   }
   return keep;

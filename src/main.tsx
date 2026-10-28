@@ -2,8 +2,10 @@ import { createRoot } from 'react-dom/client';
 import { App } from './App';
 import { startAutoRefresh } from './data/feed';
 import { startSync } from './data/sync';
+import { startUpdateCheck } from './data/appUpdate';
 import { hideSplash } from './splash';
 import { native } from './native/bridge';
+import './styles/fonts.css';
 import './styles/tokens.css';
 import './styles/app.css';
 import './styles/news.css';
@@ -13,6 +15,7 @@ createRoot(document.getElementById('root')!).render(<App />);
 
 startAutoRefresh();
 void startSync();
+startUpdateCheck();
 setTimeout(hideSplash, 8000); // sécurité : l'écran de lancement ne reste jamais bloqué
 
 // Application hors ligne (service worker) – uniquement en production (https)

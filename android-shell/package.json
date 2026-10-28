@@ -2,9 +2,10 @@
   "name": "semaphore-android",
   "private": true,
   "version": "1.0.0",
-  "description": "Coque Android (Capacitor) de Sémaphore : charge l'app web publiée sur GitHub Pages.",
+  "description": "Coque Android (Capacitor) de Sémaphore : embarque l'application et lit les données publiées sur GitHub Pages.",
   "scripts": {
     "configure": "node configure.mjs",
+    "www": "node prepare-www.mjs",
     "patch": "node patch-android.mjs"
   },
   "dependencies": {

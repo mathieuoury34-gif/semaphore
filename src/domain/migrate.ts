@@ -1,10 +1,29 @@
 // Lecture tolérante des fichiers publiés : l'ancien format (v1 : un titre, un résumé) est converti en blocs par langue.
 import type { Bullet, Digest, Feed, Lang, Story, Tx } from './types';
 import { LANGS } from './types';
+import sectorsJson from '../../data-src/sectors.json';
+
+/** Secteurs connus de l'application : un secteur disparu (ex. « europe », fondu dans « international ») est écarté d'un ancien fichier gardé hors ligne. */
+const KNOWN = new Set((sectorsJson as { id: string }[]).map((s) => s.id));
+const LEGACY: Record<string, string> = { europe: 'international' };
+function knownSectors(list: unknown): string[] {
+  const out: string[] = [];
+  for (const x of Array.isArray(list) ? list : []) {
+    const id = typeof x === 'string' ? (LEGACY[x] ?? x) : '';
+    if (KNOWN.has(id) && !out.includes(id)) out.push(id);
+  }
+  return out;
+}
 
 type Raw = Record<string, any>; // eslint-disable-line @typescript-eslint/no-explicit-any
 
 function migrateStory(st: Raw): Story {
+  const s = migrateStoryShape(st);
+  const sectors = knownSectors(s.sectors);
+  return { ...s, sectors: sectors.length ? sectors : ['international'] };
+}
+
+function migrateStoryShape(st: Raw): Story {
   if (st.tx && typeof st.tx === 'object') return st as Story;
   const items = Array.isArray(st.items) ? st.items : [];
   const lead = items.find((i: Raw) => i.t === st.title) ?? items[0];
@@ -41,6 +60,6 @@ function bullets(list: unknown): Bullet[] {
 export function normalizeDigest(raw: Raw | null): Digest | null {
   if (!raw || typeof raw !== 'object') return null;
   const sectors: Digest['sectors'] = {};
-  for (const [id, row] of Object.entries((raw.sectors ?? {}) as Record<string, Raw>)) sectors[id] = { by: String(row?.by ?? ''), bullets: bullets(row?.bullets) };
-  return { v: 2, generatedAt: String(raw.generatedAt ?? ''), by: String(raw.by ?? ''), briefBy: raw.briefBy, brief: bullets(raw.brief) as Digest['brief'], sectors };
+  for (const [id, row] of Object.entries((raw.sectors ?? {}) as Record<string, Raw>)) if (KNOWN.has(id)) sectors[id] = { by: String(row?.by ?? ''), bullets: bullets(row?.bullets) };
+  return { v: 2, generatedAt: String(raw.generatedAt ?? ''), by: String(raw.by ?? ''), briefBy: raw.briefBy, brief: (bullets(raw.brief) as Digest['brief']).filter((b) => !b.sector || KNOWN.has(b.sector)), sectors };
 }

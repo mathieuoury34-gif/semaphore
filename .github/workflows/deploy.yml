@@ -66,7 +66,7 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
-  # Application Android (APK) : coque Capacitor qui charge le site publié ci-dessus. Construite à chaque envoi de code
+  # Application Android (APK) : coque Capacitor qui embarque l'application (ouverture hors connexion) et lit les données du site publié ci-dessus. Construite à chaque envoi de code
   # (pas aux éditions planifiées) et publiée dans la release « apk » : lien de téléchargement stable, voir README.
   apk:
     needs: deploy
@@ -88,12 +88,19 @@ jobs:
           distribution: temurin
           java-version: 21
       # le SDK Android est déjà installé sur les machines ubuntu-latest de GitHub (ANDROID_HOME)
-      - run: npm install --no-audit --no-fund
       - name: Adresse de l'app web
         run: |
           OWNER=$(echo "${GITHUB_REPOSITORY_OWNER}" | tr '[:upper:]' '[:lower:]')
           REPO="${GITHUB_REPOSITORY#*/}"
           if [ "$REPO" = "$OWNER.github.io" ]; then echo "SITE_URL=https://$OWNER.github.io/" >> "$GITHUB_ENV"; else echo "SITE_URL=https://$OWNER.github.io/$REPO/" >> "$GITHUB_ENV"; fi
+      # l'APK embarque l'application (elle s'ouvre hors connexion) : on la construit ici, avec l'adresse du site pour les données
+      - name: Construire l'application web à embarquer
+        working-directory: .
+        run: |
+          npm ci --no-audit --no-fund
+          npm run build
+      - run: npm install --no-audit --no-fund
+      - run: npm run www
       - run: npm run configure
       - run: npx cap add android
       - run: npm run patch
@@ -116,6 +123,6 @@ jobs:
           body: |
             APK construit automatiquement depuis ${{ github.sha }}.
             Installer « semaphore.apk » sur le téléphone (autoriser l'installation depuis le navigateur).
-            L'interface se met à jour seule avec le site : réinstaller l'APK n'est utile que si la coque Android change.
+            L'application est embarquée (elle s'ouvre hors connexion) ; les actualités viennent du site. Quand l'interface change, l'application affiche « nouvelle version disponible » : retélécharger ce fichier et l'installer par-dessus.
           files: semaphore.apk
           make_latest: false

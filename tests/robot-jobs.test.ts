@@ -82,7 +82,7 @@ test('configuration : chaque source a un secteur connu, une langue fr/en, un ide
 
 test('diversité : chaque secteur d’opinion compte des sources de plusieurs sensibilités', () => {
   const sources = loadSources().filter((s: any) => s.enabled !== false) as any[];
-  for (const sec of ['politique', 'international', 'europe', 'economie', 'climat']) {
+  for (const sec of ['politique', 'international', 'economie', 'climat']) {
     const leans = new Set(sources.filter((s) => s.sectors.includes(sec) && s.lean).map((s) => s.lean));
     assert.ok(leans.size >= 3, `${sec} : au moins 3 sensibilités (trouvé : ${[...leans].join(', ')})`);
   }

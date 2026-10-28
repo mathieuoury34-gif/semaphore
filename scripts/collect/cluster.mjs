@@ -2,6 +2,7 @@
 // Similarité de Jaccard sur les mots significatifs des titres, fenêtre de 72 h. Déterministe et testable.
 import { sha, tokens } from './text.mjs';
 import { LANGS, pickLead } from './stories.mjs';
+import { rankSectors } from './classify.mjs';
 
 const WINDOW_MS = 72 * 3600 * 1000;
 
@@ -97,9 +98,7 @@ export function vote(st, sectors) {
 }
 
 function applyVotes(st) {
-  const ranked = Object.entries(st.votes).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
-  const top = ranked[0]?.[1] ?? 0;
-  st.sectors = ranked.filter(([, v], i) => i === 0 || v >= top * 0.45).slice(0, 3).map(([k]) => k);
+  st.sectors = rankSectors(st.votes);
 }
 
 /**
