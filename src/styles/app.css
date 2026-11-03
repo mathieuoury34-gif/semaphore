@@ -307,3 +307,11 @@ select.input { appearance: auto; }
 /* Notifications : choix de l'heure (champ natif « heure », style .input) */
 .time-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-12); }
 .time-grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+/* Aide : accordéons et listes */
+.help-body { padding: var(--space-4) 0 var(--space-12); }
+.help-list { margin: 0; padding-left: var(--space-20, 20px); display: flex; flex-direction: column; gap: var(--space-8); color: var(--text-neutral, inherit); }
+ul.help-list { list-style: disc; }
+ol.help-list { list-style: decimal; }
+.help-list li::marker { color: var(--text-moderate); }
+a.btn { text-decoration: none; }

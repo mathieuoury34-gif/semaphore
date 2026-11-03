@@ -24,14 +24,26 @@ export function siteUrl(): string {
   return u.href.replace(/[^/]*$/, '');
 }
 
-/** Adresse de téléchargement de l'APK (release « apk » du dépôt), déduite de l'adresse GitHub Pages https://<compte>.github.io/<dépôt>/. */
-export function apkUrl(): string {
+/** Adresse GitHub du dépôt (https://github.com/<compte>/<dépôt>), déduite de l'adresse GitHub Pages https://<compte>.github.io/<dépôt>/. */
+function repoUrl(): string {
   try {
     const u = new URL(siteUrl());
     const owner = u.hostname.split('.')[0];
     const repo = u.pathname.split('/').filter(Boolean)[0];
-    return owner && repo ? `https://github.com/${owner}/${repo}/releases/download/apk/semaphore.apk` : '';
+    return owner && repo && u.hostname.endsWith('.github.io') ? `https://github.com/${owner}/${repo}` : '';
   } catch { return ''; }
+}
+
+/** Adresse de téléchargement direct de l'APK (release « apk » du dépôt). */
+export function apkUrl(): string {
+  const r = repoUrl();
+  return r ? `${r}/releases/download/apk/semaphore.apk` : '';
+}
+
+/** Page GitHub de la release de l'APK (description, historique, téléchargement). */
+export function apkPageUrl(): string {
+  const r = repoUrl();
+  return r ? `${r}/releases/tag/apk` : '';
 }
 
 const authCallbacks = new Set<(idToken: string, accessToken: string) => void>();

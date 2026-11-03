@@ -12,7 +12,8 @@ import { LEANS, type Lang, type Sector, type SourceInfo, type Status } from '../
 import { followedSectors, leanSpread, sourcesOfSector } from '../domain/select';
 import { useT, type Key } from '../i18n';
 import { getNotifPrefs, notifAvailable, notifOpenBattery, notifOpenSettings, notifRequestPermission, notifTest, saveNotifPrefs, useNotifStatus } from '../native/notifications';
-import { native } from '../native/bridge';
+import { apkPageUrl, apkUrl, native } from '../native/bridge';
+import { helpTopics, type HelpBlock } from './help-content';
 
 function Section({ title, children, id }: { title: string; children: React.ReactNode; id: string }) {
   return (
@@ -293,6 +294,66 @@ function Summaries({ status, aiOn }: { status: Status | null; aiOn: boolean }) {
   );
 }
 
+// ------------------------------------------------------------------ 6 bis. Aide
+/** « **gras** » dans les textes d'aide. */
+function rich(text: string): React.ReactNode[] {
+  return text.split(/\*\*(.+?)\*\*/g).map((part, i) => (i % 2 ? <strong key={i}>{part}</strong> : part));
+}
+
+function ApkButtons() {
+  const { t } = useT();
+  const page = apkPageUrl(), file = apkUrl();
+  if (!file) return null;
+  // Dans l'APK, une page externe s'ouvre dans le navigateur du téléphone (le téléchargement s'y fait normalement).
+  const open = (url: string) => (e: React.MouseEvent) => { if (native.isApp()) { e.preventDefault(); void native.openBrowser(url); } };
+  return (
+    <div className="stack-8">
+      <div className="grid-2 btns">
+        <a className="btn btn-secondary" href={page} target="_blank" rel="noopener noreferrer" onClick={open(page)}><Icon name="external" size={18} />{t('help.apkPage')}</a>
+        <a className="btn btn-secondary" href={file} download onClick={open(file)}><Icon name="download" size={18} />{t('help.apkGet')}</a>
+      </div>
+    </div>
+  );
+}
+
+function HelpBody({ blocks }: { blocks: HelpBlock[] }) {
+  return (
+    <>
+      {blocks.map((b, i) => {
+        switch (b.k) {
+          case 'p': return <p key={i} className="c-neutral">{rich(b.text)}</p>;
+          case 'h': return <p key={i} className="t-strong">{b.text}</p>;
+          case 'ul': return <ul key={i} className="help-list">{b.items.map((x, j) => <li key={j}>{rich(x)}</li>)}</ul>;
+          case 'ol': return <ol key={i} className="help-list">{b.items.map((x, j) => <li key={j}>{rich(x)}</li>)}</ol>;
+          case 'apk': return <ApkButtons key={i} />;
+        }
+      })}
+    </>
+  );
+}
+
+function Help() {
+  const { t, lang } = useT();
+  return (
+    <Section id="s-help" title={t('set.help')}>
+      <div className="divided">
+        {helpTopics(lang).map((topic, i) => (
+          <details key={topic.id} className="more help-topic" open={i === 0 || undefined}>
+            <summary>
+              <span className="row" style={{ gap: 'var(--space-12)' }}>
+                <span className="digest-icon" style={{ ['--sc' as string]: 'var(--brand-primary)' }}><Icon name={topic.icon} size={18} /></span>
+                <span>{topic.title}</span>
+              </span>
+              <Icon name="down" size={18} />
+            </summary>
+            <div className="stack-12 help-body"><HelpBody blocks={topic.blocks} /></div>
+          </details>
+        ))}
+      </div>
+    </Section>
+  );
+}
+
 // ------------------------------------------------------------------ 7. Données
 function Data() {
   const user = useUserState();
@@ -334,6 +395,7 @@ export function SettingsScreen() {
         <Notifications />
         <Sources status={status} />
         <Summaries status={status} aiOn={aiOn} />
+        <Help />
         <Data />
         <p className="t-caption c-moderate center">{t('footer')}</p>
       </div>
