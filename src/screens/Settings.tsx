@@ -11,7 +11,7 @@ import { dateNumeric, dateTime } from '../domain/format';
 import { LEANS, type Lang, type Sector, type SourceInfo, type Status } from '../domain/types';
 import { followedSectors, leanSpread, sourcesOfSector } from '../domain/select';
 import { useT, type Key } from '../i18n';
-import { getNotifPrefs, notifAvailable, notifOpenBattery, notifOpenSettings, notifRequestPermission, notifTest, saveNotifPrefs, useNotifStatus } from '../native/notifications';
+import { getNotifPrefs, notifAvailable, notifOpenBattery, notifOpenSettings, notifRequestPermission, saveNotifPrefs, useNotifStatus } from '../native/notifications';
 import { apkPageUrl, apkUrl, native } from '../native/bridge';
 import { helpTopics, type HelpBlock } from './help-content';
 
@@ -140,17 +140,9 @@ function Notifications() {
     if (s?.permission === 'granted') { patch({ on: true }); showToast(t('notif.on')); }
     else showToast(t('notif.denied'), { error: true });
   };
-  const test = async () => {
-    setBusy(true);
-    const err = await notifTest();
-    setBusy(false);
-    showToast(err ? t('notif.testFail', { err }) : t('notif.testOk'), err ? { error: true } : undefined);
-  };
   const setTime = (i: 0 | 1, v: string) => { if (/^\d\d:\d\d$/.test(v)) patch({ times: i === 0 ? [v, prefs.times[1]] : [prefs.times[0], v] }); };
-  const xiaomi = /xiaomi|redmi|poco/i.test(status?.manufacturer ?? '');
   return (
     <Section id="s-notif" title={t('set.notif')}>
-      <p className="c-neutral">{t('notif.intro')}</p>
       <div className="setting-row">
         <span className="grow" id="notif-switch">{t('notif.switch')}</span>
         <Switch checked={prefs.on && !blocked} onChange={(v) => void toggle(v)} labelledBy="notif-switch" disabled={busy} />
@@ -176,15 +168,9 @@ function Notifications() {
               </label>
             )}
           </div>
-          <p className="t-caption c-moderate">{t('notif.help')}</p>
-          <button type="button" className="btn btn-secondary" disabled={busy} onClick={() => void test()}><Icon name="bell" size={18} />{t('notif.test')}</button>
           {status && !status.batteryUnrestricted && (
-            <>
-              <p className="t-caption c-moderate">{t('notif.battery')}</p>
-              <button type="button" className="btn btn-secondary" onClick={() => void notifOpenBattery()}>{t('notif.batteryBtn')}</button>
-            </>
+            <button type="button" className="btn btn-secondary" onClick={() => void notifOpenBattery()}>{t('notif.batteryBtn')}</button>
           )}
-          {xiaomi && <p className="t-caption c-moderate">{t('notif.xiaomi')}</p>}
         </>
       )}
     </Section>
@@ -336,20 +322,32 @@ function Help() {
   const { t, lang } = useT();
   return (
     <Section id="s-help" title={t('set.help')}>
-      <div className="divided">
-        {helpTopics(lang).map((topic, i) => (
-          <details key={topic.id} className="more help-topic" open={i === 0 || undefined}>
-            <summary>
-              <span className="row" style={{ gap: 'var(--space-12)' }}>
-                <span className="digest-icon" style={{ ['--sc' as string]: 'var(--brand-primary)' }}><Icon name={topic.icon} size={18} /></span>
-                <span>{topic.title}</span>
-              </span>
-              <Icon name="down" size={18} />
-            </summary>
-            <div className="stack-12 help-body"><HelpBody blocks={topic.blocks} /></div>
-          </details>
-        ))}
-      </div>
+      <details className="more help-all">
+        <summary>
+          <span className="row" style={{ gap: 'var(--space-12)' }}>
+            <span className="digest-icon" style={{ ['--sc' as string]: 'var(--brand-primary)' }}><Icon name="info" size={18} /></span>
+            <span className="stack-4">
+              <span>{t('help.title')}</span>
+              <span className="t-caption c-moderate">{t('help.sub')}</span>
+            </span>
+          </span>
+          <Icon name="down" size={18} />
+        </summary>
+        <div className="divided help-topics">
+          {helpTopics(lang).map((topic) => (
+            <details key={topic.id} className="more help-topic">
+              <summary>
+                <span className="row" style={{ gap: 'var(--space-12)' }}>
+                  <span className="digest-icon" style={{ ['--sc' as string]: 'var(--brand-primary)' }}><Icon name={topic.icon} size={18} /></span>
+                  <span>{topic.title}</span>
+                </span>
+                <Icon name="down" size={18} />
+              </summary>
+              <div className="stack-12 help-body"><HelpBody blocks={topic.blocks} /></div>
+            </details>
+          ))}
+        </div>
+      </details>
     </Section>
   );
 }

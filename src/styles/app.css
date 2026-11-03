@@ -315,3 +315,8 @@ ul.help-list { list-style: disc; }
 ol.help-list { list-style: decimal; }
 .help-list li::marker { color: var(--text-moderate); }
 a.btn { text-decoration: none; }
+.help-all > summary { min-height: 56px; }
+.help-topics { margin-top: var(--space-8); }
+/* Aide : seul le chevron de la ligne ouverte pivote (pas les pictogrammes, ni ceux des rubriques fermées) */
+details.help-all[open] > summary svg, details.help-all[open] details.help-topic > summary svg { transform: none; }
+details.help-all[open] > summary > svg:last-child, details.help-all[open] details.help-topic[open] > summary > svg:last-child { transform: rotate(180deg); }

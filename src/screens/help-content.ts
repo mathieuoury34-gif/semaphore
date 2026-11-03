@@ -118,7 +118,6 @@ const FR: HelpTopic[] = [
       { k: 'ul', items: [
         "Le robot publie une édition vers 7 h et vers 19 h (heure de Paris). Si la nouvelle édition n'est pas encore là, Sémaphore réessaie pendant environ 1 h 40 plutôt que d'afficher celle de la veille : choisissez donc des heures proches de 7 h et 19 h.",
         "Pour désactiver : l'interrupteur dans Réglages, ou les réglages de notifications d'Android.",
-        "« Envoyer une notification de test » vérifie que tout fonctionne tout de suite.",
         "Pour que l'alarme arrive à l'heure, touchez « Autoriser en arrière-plan ». Sur Xiaomi, Redmi ou Poco, activez aussi « Démarrage automatique » et mettez l'économiseur de batterie sur « Aucune restriction » (Paramètres › Applications › Sémaphore).",
       ] },
     ],
@@ -253,7 +252,6 @@ const EN: HelpTopic[] = [
       { k: 'ul', items: [
         "The robot publishes an edition around 7 am and 7 pm (Paris time). If the new edition is not there yet, Semaphore retries for about 1 h 40 rather than showing yesterday’s: so pick times close to 7 am and 7 pm.",
         'To turn off: the switch in Settings, or Android’s notification settings.',
-        '“Send a test notification” checks right away that everything works.',
         'For the alarm to arrive on time, tap “Allow background activity”. On Xiaomi, Redmi or Poco, also turn on “Autostart” and set the battery saver to “No restrictions” (Settings › Apps › Semaphore).',
       ] },
     ],

@@ -34,11 +34,6 @@ export const notifRequestPermission = (): Promise<NotifStatus | null> => call<No
 export const notifOpenSettings = (): Promise<unknown> => call('openSettings');
 export const notifOpenBattery = (): Promise<unknown> => call('openBatterySettings');
 
-/** Affiche tout de suite la dernière édition. Renvoie null si tout va bien, sinon le message d'erreur. */
-export async function notifTest(): Promise<string | null> {
-  try { await p()?.test(); return null; } catch (e) { return (e as { message?: string })?.message || 'Échec'; }
-}
-
 /** Envoie au natif les réglages courants (activation, heures, langue, secteurs suivis, adresse du site). */
 export async function syncNotifications(): Promise<void> {
   if (!notifAvailable()) return;
