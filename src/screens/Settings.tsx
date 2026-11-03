@@ -11,6 +11,8 @@ import { dateNumeric, dateTime } from '../domain/format';
 import { LEANS, type Lang, type Sector, type SourceInfo, type Status } from '../domain/types';
 import { followedSectors, leanSpread, sourcesOfSector } from '../domain/select';
 import { useT, type Key } from '../i18n';
+import { getNotifPrefs, notifAvailable, notifOpenBattery, notifOpenSettings, notifRequestPermission, notifTest, saveNotifPrefs, useNotifStatus } from '../native/notifications';
+import { native } from '../native/bridge';
 
 function Section({ title, children, id }: { title: string; children: React.ReactNode; id: string }) {
   return (
@@ -109,6 +111,81 @@ function FollowedSectors() {
           </li>
         ))}
       </ul>
+    </Section>
+  );
+}
+
+// ------------------------------------------------------------------ 4 bis. Notifications d'édition (APK Android)
+function Notifications() {
+  const { t } = useT();
+  const status = useNotifStatus();
+  const [prefs, setPrefs] = useState(getNotifPrefs);
+  const [busy, setBusy] = useState(false);
+  const app = native.isApp();
+  const patch = (p: Partial<typeof prefs>) => setPrefs(saveNotifPrefs(p));
+
+  if (!app) {
+    return <Section id="s-notif" title={t('set.notif')}><p className="c-neutral">{t('notif.web')}</p></Section>;
+  }
+  if (!notifAvailable()) {
+    return <Section id="s-notif" title={t('set.notif')}><p className="c-neutral">{t('notif.old')}</p></Section>;
+  }
+  const blocked = status?.permission === 'denied';
+  const toggle = async (on: boolean) => {
+    if (!on) { patch({ on: false }); showToast(t('notif.off')); return; }
+    setBusy(true);
+    const s = await notifRequestPermission();
+    setBusy(false);
+    if (s?.permission === 'granted') { patch({ on: true }); showToast(t('notif.on')); }
+    else showToast(t('notif.denied'), { error: true });
+  };
+  const test = async () => {
+    setBusy(true);
+    const err = await notifTest();
+    setBusy(false);
+    showToast(err ? t('notif.testFail', { err }) : t('notif.testOk'), err ? { error: true } : undefined);
+  };
+  const setTime = (i: 0 | 1, v: string) => { if (/^\d\d:\d\d$/.test(v)) patch({ times: i === 0 ? [v, prefs.times[1]] : [prefs.times[0], v] }); };
+  const xiaomi = /xiaomi|redmi|poco/i.test(status?.manufacturer ?? '');
+  return (
+    <Section id="s-notif" title={t('set.notif')}>
+      <p className="c-neutral">{t('notif.intro')}</p>
+      <div className="setting-row">
+        <span className="grow" id="notif-switch">{t('notif.switch')}</span>
+        <Switch checked={prefs.on && !blocked} onChange={(v) => void toggle(v)} labelledBy="notif-switch" disabled={busy} />
+      </div>
+      {blocked && (
+        <>
+          <p className="t-caption c-critical" role="status">{t('notif.denied')}</p>
+          <button type="button" className="btn btn-secondary" onClick={() => void notifOpenSettings()}>{t('notif.openSettings')}</button>
+        </>
+      )}
+      {prefs.on && !blocked && (
+        <>
+          <Segmented<'1' | '2'> label={t('notif.count')} value={String(prefs.count) as '1' | '2'} onChange={(v) => patch({ count: v === '1' ? 1 : 2 })} options={[['1', t('notif.one')], ['2', t('notif.two')]]} />
+          <div className={'time-grid' + (prefs.count === 2 ? ' two' : '')}>
+            <label className="field">
+              <span className="lbl">{prefs.count === 2 ? t('notif.time1') : t('notif.time')}</span>
+              <input className="input" type="time" value={prefs.times[0]} onChange={(e) => setTime(0, e.target.value)} />
+            </label>
+            {prefs.count === 2 && (
+              <label className="field">
+                <span className="lbl">{t('notif.time2')}</span>
+                <input className="input" type="time" value={prefs.times[1]} onChange={(e) => setTime(1, e.target.value)} />
+              </label>
+            )}
+          </div>
+          <p className="t-caption c-moderate">{t('notif.help')}</p>
+          <button type="button" className="btn btn-secondary" disabled={busy} onClick={() => void test()}><Icon name="bell" size={18} />{t('notif.test')}</button>
+          {status && !status.batteryUnrestricted && (
+            <>
+              <p className="t-caption c-moderate">{t('notif.battery')}</p>
+              <button type="button" className="btn btn-secondary" onClick={() => void notifOpenBattery()}>{t('notif.batteryBtn')}</button>
+            </>
+          )}
+          {xiaomi && <p className="t-caption c-moderate">{t('notif.xiaomi')}</p>}
+        </>
+      )}
     </Section>
   );
 }
@@ -254,6 +331,7 @@ export function SettingsScreen() {
         <Appearance />
         <Language aiOn={aiOn} />
         <FollowedSectors />
+        <Notifications />
         <Sources status={status} />
         <Summaries status={status} aiOn={aiOn} />
         <Data />

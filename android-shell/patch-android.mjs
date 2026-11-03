@@ -1,9 +1,10 @@
 // Adapte le projet Android généré par `npx cap add android` (dossier android/, jamais versionné) :
 //  - lien semaphore://auth (retour de la connexion Google ouverte dans le navigateur du téléphone) ;
 //  - keystore de debug versionné : les mises à jour s'installent par-dessus l'APK précédent ;
-//  - icônes et écran de lancement de Sémaphore (fond #2B2135 + pictogramme).
+//  - icônes et écran de lancement de Sémaphore (fond #2B2135 + pictogramme) ;
+//  - notifications d'édition : plugin Capacitor (plugin/java), récepteur d'alarmes, permissions, pictogramme de la barre d'état.
 // Le script est idempotent : le relancer ne duplique rien.
-import { cpSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 const A = 'android';
@@ -28,6 +29,30 @@ if (!m.includes('android:scheme="semaphore"')) {
   const i = m.indexOf('</activity>');
   must(i > 0, 'balise </activity> introuvable dans le manifeste');
   m = m.slice(0, i) + filter + '        ' + m.slice(i);
+}
+
+// notifications d'édition : permissions + récepteur (alarmes, redémarrage du téléphone, mise à jour de l'application)
+const perms = ['android.permission.POST_NOTIFICATIONS', 'android.permission.RECEIVE_BOOT_COMPLETED', 'android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS'];
+for (const perm of perms) {
+  if (m.includes(perm)) continue;
+  const i = m.lastIndexOf('</manifest>');
+  must(i > 0, 'balise </manifest> introuvable dans le manifeste');
+  m = m.slice(0, i) + `    <uses-permission android:name="${perm}" />\n` + m.slice(i);
+}
+if (!m.includes('.EditionReceiver')) {
+  const receiver = `
+        <receiver android:name=".EditionReceiver" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+                <action android:name="android.intent.action.TIME_SET" />
+            </intent-filter>
+        </receiver>
+`;
+  const i = m.indexOf('</application>');
+  must(i > 0, 'balise </application> introuvable dans le manifeste');
+  m = m.slice(0, i) + receiver + '    ' + m.slice(i);
 }
 write(manifestPath, m);
 
@@ -59,10 +84,19 @@ public class MainActivity extends BridgeActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         SplashScreen.installSplashScreen(this);
+        registerPlugin(SemaphoreNotificationsPlugin.class);
         super.onCreate(savedInstanceState);
     }
 }
 `);
+
+// ---------------------------------------------------------------- notifications : sources Java du plugin et pictogramme
+const javaDir = join(APP, 'src/main/java/com/mathieu/semaphore');
+mkdirSync(javaDir, { recursive: true });
+const pluginSrc = 'plugin/java/com/mathieu/semaphore';
+must(existsSync(pluginSrc), 'sources du plugin de notifications introuvables (' + pluginSrc + ')');
+for (const f of readdirSync(pluginSrc)) cpSync(join(pluginSrc, f), join(javaDir, f));
+cpSync('plugin/res', join(APP, 'src/main/res'), { recursive: true });
 
 // ---------------------------------------------------------------- icônes
 cpSync('res', join(APP, 'src/main/res'), { recursive: true });

@@ -7,7 +7,7 @@ type Any = any;
 function cap(): Any {
   return typeof window !== 'undefined' ? (window as Any).Capacitor : undefined;
 }
-function plugin(name: string): Any {
+export function plugin(name: string): Any {
   return cap()?.Plugins?.[name];
 }
 

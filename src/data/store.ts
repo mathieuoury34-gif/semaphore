@@ -1,6 +1,7 @@
 // État personnel persisté localement (localStorage) + synchronisation cloud facultative (voir sync.ts).
 import { useSyncExternalStore } from 'react';
 import type { Fav, Lang, Story, UserState } from '../domain/types';
+import type { NotifPrefs } from '../domain/notif';
 import { emptyState, favFromStory, pruneRead, sanitize, withFav, withoutFav } from '../domain/state';
 
 import { KEY_DEVICE, KEY_STATE } from './keys';
@@ -105,7 +106,7 @@ export function setSectorOff(sector: string, ids: string[]): void {
 
 // ------------------------------------------------------------ préférences propres à l'appareil (non synchronisées)
 const PREF_KEY = KEY_DEVICE;
-export interface DevicePrefs { syncedUid?: string }
+export interface DevicePrefs { syncedUid?: string; notif?: NotifPrefs }
 export function getDevicePrefs(): DevicePrefs {
   try { return JSON.parse(localStorage.getItem(PREF_KEY) || '{}'); } catch { return {}; }
 }

@@ -3,6 +3,7 @@ import { App } from './App';
 import { startAutoRefresh } from './data/feed';
 import { startSync } from './data/sync';
 import { startUpdateCheck } from './data/appUpdate';
+import { startNotifications } from './native/notifications';
 import { hideSplash } from './splash';
 import { native } from './native/bridge';
 import './styles/fonts.css';
@@ -16,6 +17,7 @@ createRoot(document.getElementById('root')!).render(<App />);
 startAutoRefresh();
 void startSync();
 startUpdateCheck();
+startNotifications();
 setTimeout(hideSplash, 8000); // sécurité : l'écran de lancement ne reste jamais bloqué
 
 // Application hors ligne (service worker) – uniquement en production (https)
