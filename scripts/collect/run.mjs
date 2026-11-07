@@ -172,7 +172,8 @@ log(`Sujets : ${stories.length} (${touched.length} créés ou enrichis)`);
 
 // ------------------------------------------------------------------ résumés
 const llm = NO_LLM ? null : createLLM(process.env, { log });
-const llmDone = (st) => LANGS.every((L) => st.tx?.[L]?.by === 'llm');
+// « terminé » : résumés par modèle dans les deux langues, et titre déjà traduit (ou déjà tenté) dans la langue où l'article n'existe pas
+const llmDone = (st) => LANGS.every((L) => { const x = st.tx?.[L]; return x?.by === 'llm' && (st.items.some((i) => i.l === L) || x.tr || x.tt); });
 const freshMs = (st) => (sectorCfg[st.sectors[0]]?.freshHours ?? 60) * 3600000;
 const wantRefresh = (st) => (!hasSummary(st) && !st.noSummary) || (llm && !llmDone(st) && Date.now() - Date.parse(st.date) < Math.max(40 * 3600000, freshMs(st) * 0.7));
 const pickSet = new Map();
@@ -231,6 +232,7 @@ if (llm && candidates.length) {
       const native = st.items.some((i) => i.l === L);
       const tx = (st.tx[L] ??= { u: lead.u, x: lead.s });
       tx.s = v[L].resume; tx.by = 'llm';
+      if (!native) tx.tt = 1; // titre confié au modèle : inutile de le redemander à chaque édition
       if (!tx.t) { tx.t = v[L].titre || lead.t; if (v[L].titre) tx.tr = 1; } // titre traduit seulement quand aucun article n'existe dans cette langue
       else if (!native && v[L].titre && norm(v[L].titre) !== norm(tx.t)) { tx.t = v[L].titre; tx.tr = 1; }
     }

@@ -50,7 +50,7 @@ export function extractiveSummary(text, { title = '', max = 380, maxSentences = 
 // ------------------------------------------------------------------ résumés par modèle (français ET anglais en un seul appel)
 const SYSTEM_SUMMARY =
   "Tu rédiges une revue de presse personnelle bilingue pour un ingénieur curieux. Pour chaque article reçu, produis DANS LES DEUX LANGUES (« fr » = français, « en » = anglais) :\n" +
-  "- « titre » : un titre clair et neutre (reprends tel quel le titre d'origine quand il est déjà dans cette langue) ;\n" +
+  "- « titre » : un titre clair et neutre, écrit dans la langue demandée. TRADUIS-le quand l'article est dans une autre langue (un titre allemand ou anglais devient un titre français dans « fr » ; un titre allemand ou français devient un titre anglais dans « en ») ; ne le reprends tel quel que s'il est déjà dans cette langue ;\n" +
   "- « resume » : 2 à 3 phrases factuelles (entre 220 et 420 caractères) : ce qui s'est passé, les chiffres et noms essentiels, le contexte utile.\n" +
   "Pour une offre d'emploi (« type » = « offre »), résume le poste : entreprise, lieu, mission, profil recherché, type de contrat (stage, CDI, thèse…).\n" +
   "Règles : n'invente rien, aucune opinion, ne dis jamais « l'article explique » ; conserve noms propres, chiffres et unités exacts ; " +
