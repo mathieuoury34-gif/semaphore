@@ -50,6 +50,13 @@ button.bullet:hover .bullet-text { text-decoration: underline; text-decoration-c
 .tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-12); }
 .sector-tile { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-6); padding: var(--space-16) var(--space-12) var(--space-12); border: 0; border-radius: var(--radius-12); background: var(--bg-surface); box-shadow: var(--shadow-s); color: var(--text); text-align: left; cursor: pointer; min-width: 0; }
 .sector-tile:hover { background: var(--bg-hover); }
+.sector-tile { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; position: relative; }
+.hold-hint { margin: 0 0 calc(-1 * var(--space-4)); }
+/* déplacement par appui long : les autres tuiles glissent, la tuile saisie se soulève et suit le doigt */
+.tiles.reordering { touch-action: none; }
+.tiles.reordering .sector-tile { transition: transform 0.2s ease; }
+.tiles.reordering .sector-tile.dragging { transition: none; z-index: 20; box-shadow: var(--shadow-m); background: var(--bg-surface); cursor: grabbing; pointer-events: none; }
+.tiles.dropping .sector-tile { transition: none !important; }
 .sector-tile .tile-icon { width: 40px; height: 40px; border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center; background: var(--bg-brand-minimal); background: color-mix(in srgb, var(--sc, var(--brand-primary)) 14%, var(--bg-surface)); color: var(--sc, var(--text-primary)); }
 .tile-name { font: 700 15px/20px var(--font-heading); }
 .tile-desc { font: var(--type-caption); color: var(--text-moderate); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }

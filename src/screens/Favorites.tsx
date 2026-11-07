@@ -86,7 +86,7 @@ export function FavoritesScreen() {
                       <span className="story-meta">
                         {x.sector && <SectorTag id={x.sector} />}
                         <span>{c.source}</span><span aria-hidden="true">·</span><time dateTime={x.date}>{relTime(x.date, lang)}</time>
-                        {c.other && <span className="badge outline" title={t('fav.otherLang', { lang: langName(x.lang === 'en' ? 'en' : 'fr', lang) })}>{x.lang.toUpperCase()}</span>}
+                        {c.other && <span className="badge outline" title={t('fav.otherLang', { lang: langName(x.lang, lang) })}>{x.lang.toUpperCase()}</span>}
                       </span>
                       <span className="story-title">{c.title}</span>
                     </button>

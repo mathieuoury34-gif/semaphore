@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { digestOf, followedSectors, keywordMatches, leadItem, leanSpread, localBullets, newCount, searchAll, sectorStories, sortStories, sourcesOfSector, storySpread, storyText, storyTitle, textBy, visibleIn, type View } from '../src/domain/select';
+import { applyVisibleOrder, digestOf, followedSectors, orderedSectors, keywordMatches, leadItem, leanSpread, localBullets, newCount, searchAll, sectorStories, sortStories, sourcesOfSector, storySpread, storyText, storyTitle, textBy, visibleIn, type View } from '../src/domain/select';
 import { matchesQuery, norm, clip } from '../src/domain/text';
 import { relTime, dateTime, edition, plural } from '../src/domain/format';
 import { normalizeDigest, normalizeFeed } from '../src/domain/migrate';
@@ -178,4 +178,25 @@ test('traductions : pluriels, variables, repli', () => {
   assert.equal(makeT('en')('common.updated', { when: 'just now' }), 'Updated just now');
   assert.equal(makeT('fr')('tab.reglages'), 'Réglages');
   assert.equal(makeT('en')('set.lang'), 'Language');
+});
+
+// ------------------------------------------------------------------ ordre des secteurs choisi par l'utilisateur
+const ALL = ['politique', 'climat', 'espace', 'munich', 'positif'];
+test('ordre des secteurs : sans choix, l’ordre d’origine ; les secteurs non placés suivent', () => {
+  assert.deepEqual(orderedSectors(ALL, {}), ALL);
+  assert.deepEqual(orderedSectors(ALL, { order: [] }), ALL);
+  assert.deepEqual(orderedSectors(ALL, { order: ['positif', 'espace'] }), ['positif', 'espace', 'politique', 'climat', 'munich']);
+});
+test('ordre des secteurs : identifiants inconnus ou en double ignorés', () => {
+  assert.deepEqual(orderedSectors(ALL, { order: ['fantome', 'munich', 'munich', 'politique'] }), ['munich', 'politique', 'climat', 'espace', 'positif']);
+});
+test('secteurs suivis : filtrés et dans l’ordre de l’utilisateur', () => {
+  assert.deepEqual(followedSectors(ALL, { followed: ['climat', 'munich', 'espace'], order: ['munich', 'espace'] }), ['munich', 'espace', 'climat']);
+  assert.deepEqual(followedSectors(ALL, { followed: null, order: ['positif'] }), ['positif', 'politique', 'climat', 'espace', 'munich']);
+  assert.deepEqual(followedSectors(ALL, { followed: ['climat'] }), ['climat']);
+});
+test('nouvel ordre des secteurs affichés : les secteurs masqués gardent leur place', () => {
+  // « climat » est masqué : les trois autres affichés se permutent autour de lui
+  assert.deepEqual(applyVisibleOrder(['politique', 'climat', 'espace', 'munich'], ['munich', 'politique', 'espace']), ['munich', 'climat', 'politique', 'espace']);
+  assert.deepEqual(applyVisibleOrder(ALL, ['positif', 'munich', 'espace', 'climat', 'politique']), ['positif', 'munich', 'espace', 'climat', 'politique']);
 });

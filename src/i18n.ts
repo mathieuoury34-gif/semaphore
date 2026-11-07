@@ -13,7 +13,7 @@ const FR = {
   'common.refresh': 'Actualiser', 'common.back': 'Retour', 'common.close': 'Fermer', 'common.retry': 'Réessayer', 'common.undo': 'Annuler',
   'common.loading': 'Chargement…', 'common.unavailable': 'Données indisponibles', 'common.updated': 'Mis à jour {when}',
   'common.unread': 'Non lu', 'common.more': 'Voir plus ({n} restants)', 'common.share': 'Partager', 'common.copied': 'Lien copié',
-  'name.fr': 'français', 'name.en': 'anglais',
+  'name.fr': 'français', 'name.en': 'anglais', 'name.de': 'allemand',
   'common.clear': 'Effacer', 'common.search': 'Rechercher', 'common.all': 'Tout', 'common.fr': 'Français', 'common.en': 'English',
   'banner.offline': 'Hors connexion', 'banner.failed': 'Actualisation impossible', 'banner.old': '{why} – données du {date}',
   'banner.stale': 'Pas de nouvelle édition depuis {ago} (dernière : {date}).',
@@ -28,7 +28,7 @@ const FR = {
   'brief.plain': 'Résumés générés à partir des titres : voir Réglages › Résumé pour activer les résumés par IA.',
   'brief.onlyNative': "Sans IA, seuls les sujets publiés dans cette langue sont affichés : voir Réglages › Résumé.",
   // ---- Secteurs
-  'sectors.title': 'Secteurs', 'sectors.search': "Rechercher dans l'actualité", 'sectors.results': ['{n} résultat', '{n} résultats'], 'sectors.latest': ' (les plus récents)',
+  'sectors.hold': 'Appui long sur un secteur pour le déplacer', 'sectors.title': 'Secteurs', 'sectors.search': "Rechercher dans l'actualité", 'sectors.results': ['{n} résultat', '{n} résultats'], 'sectors.latest': ' (les plus récents)',
   'sectors.noResultTitle': 'Aucun résultat', 'sectors.noResultText': 'Essayez un autre mot, ou moins de mots.',
   'sectors.new': ['{n} nouveau', '{n} nouveaux'], 'sectors.new99': '99+ nouveaux', 'sectors.upToDate': 'À jour',
   'sector.sort': 'Tri', 'sector.top': 'Importants', 'sector.recent': 'Récents', 'sector.unread': 'Non lus', 'sector.searchIn': 'Chercher en {name}', 'sector.searchAria': 'Rechercher dans le secteur',
@@ -102,7 +102,7 @@ const EN: Record<keyof typeof FR, Val> = {
   'common.refresh': 'Refresh', 'common.back': 'Back', 'common.close': 'Close', 'common.retry': 'Retry', 'common.undo': 'Undo',
   'common.loading': 'Loading…', 'common.unavailable': 'Data unavailable', 'common.updated': 'Updated {when}',
   'common.unread': 'Unread', 'common.more': 'Show more ({n} left)', 'common.share': 'Share', 'common.copied': 'Link copied',
-  'name.fr': 'French', 'name.en': 'English',
+  'name.fr': 'French', 'name.en': 'English', 'name.de': 'German',
   'common.clear': 'Clear', 'common.search': 'Search', 'common.all': 'All', 'common.fr': 'Français', 'common.en': 'English',
   'banner.offline': 'Offline', 'banner.failed': 'Could not refresh', 'banner.old': '{why} – data from {date}',
   'banner.stale': 'No new edition for {ago} (latest: {date}).',
@@ -115,7 +115,7 @@ const EN: Record<keyof typeof FR, Val> = {
   'brief.noData': 'No edition published yet.', 'brief.loadFail': 'Could not load the news ({err}).',
   'brief.plain': 'Summaries are built from headlines: see Settings › Summary to turn on AI summaries.',
   'brief.onlyNative': 'Without AI, only stories published in this language are shown: see Settings › Summary.',
-  'sectors.title': 'Sectors', 'sectors.search': 'Search the news', 'sectors.results': ['{n} result', '{n} results'], 'sectors.latest': ' (most recent)',
+  'sectors.hold': 'Press and hold a sector to move it', 'sectors.title': 'Sectors', 'sectors.search': 'Search the news', 'sectors.results': ['{n} result', '{n} results'], 'sectors.latest': ' (most recent)',
   'sectors.noResultTitle': 'No results', 'sectors.noResultText': 'Try another word, or fewer words.',
   'sectors.new': ['{n} new', '{n} new'], 'sectors.new99': '99+ new', 'sectors.upToDate': 'Up to date',
   'sector.sort': 'Sort', 'sector.top': 'Top', 'sector.recent': 'Latest', 'sector.unread': 'Unread', 'sector.searchIn': 'Search {name}', 'sector.searchAria': 'Search this sector',
@@ -207,4 +207,7 @@ export function useT(): { t: T; lang: Lang } {
   return bound[useLang()];
 }
 /** Nom d'une langue, écrit dans la langue de l'interface (« anglais » / « English »). */
-export const langName = (lang: Lang, ui: Lang): string => translate(ui, lang === 'fr' ? 'name.fr' : 'name.en');
+export const langName = (code: string, ui: Lang): string => {
+  const key = `name.${code}` as Key;
+  return key in DICT[ui] || key in DICT.fr ? translate(ui, key) : code.toUpperCase();
+};

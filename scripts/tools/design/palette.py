@@ -84,6 +84,10 @@ T = {
  'sector-metier': ('#6C6C00', '#979700'),
  'sector-sport': ('#7A1F28', '#E0707C'),
  'sector-emploi': ('#795548', '#BCAAA4'),
+ 'sector-munich': ('#236789', '#6DBAE0'),
+ 'sector-herault': ('#B5541B', '#E8935B'),
+ 'sector-vendargues': ('#730F43', '#FC98CB'),
+ 'sector-positif': ('#2A2BB6', '#9899F6'),
  # Sensibilité éditoriale : le violet laisse place au sable (ni rouge, ni bleu, ni marque)
  'lean-left': ('#9A6B2F', '#C9A06B'),
  'lean-center': ('#78909C', '#90A4AE'),

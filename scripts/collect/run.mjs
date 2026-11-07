@@ -26,7 +26,7 @@ const ONLY = arg('only', null)?.split(',');
 const FETCH_ARTICLES = !argv.includes('--no-articles');
 const NO_LLM = argv.includes('--no-llm');
 const DRY = argv.includes('--dry');
-const MAX_SUMMARIES = Number(arg('max-summaries', 140));
+const MAX_SUMMARIES = Number(arg('max-summaries', 200));
 const RETENTION_DAYS = Number(process.env.VIGIE_RETENTION_DAYS) || 7;
 const MAX_PER_SECTOR = Number(process.env.VIGIE_MAX_PER_SECTOR) || 180; // sujets conservés par secteur (le plus important d'abord)
 const SCHEMA = 2;
@@ -45,6 +45,7 @@ const sources = allSources.filter((s) => s.enabled !== false && (!ONLY || ONLY.i
 const sourceMap = new Map(allSources.map((s) => [s.id, s]));
 const sectorName = Object.fromEntries(sectors.map((s) => [s.id, s.name]));
 const sectorCfg = Object.fromEntries(sectors.map((s) => [s.id, s]));
+const DECAY = Object.fromEntries(sectors.filter((s) => s.decayHours).map((s) => [s.id, s.decayHours])); // demi-vie du classement, en heures, des secteurs lents
 /** Durée de conservation d'un sujet : 7 jours, plus pour les secteurs qui le demandent (offres d'emploi). */
 const keepDays = (sectorIds) => Math.max(RETENTION_DAYS, ...sectorIds.slice(0, 1).map((id) => sectorCfg[id]?.retentionDays ?? 0));
 
@@ -164,7 +165,7 @@ for (const st of touched) refreshLead(st, sourceMap);
 for (const st of stories) refreshTx(st, sourceMap, raw); // blocs natifs par langue (titre, extrait, article de tête)
 stories = stories.filter((st) => Date.parse(st.date) >= cutoffFor(keepDays(st.sectors)));
 for (const st of stories) st.cv = CV;
-rankStories(stories, sourceMap, now.getTime());
+rankStories(stories, sourceMap, now.getTime(), DECAY);
 stories = capPerSector(stories, MAX_PER_SECTOR, Object.fromEntries(sectors.filter((s) => s.capFactor).map((s) => [s.id, s.capFactor])));
 const byId = new Map(stories.map((s) => [s.id, s]));
 log(`Sujets : ${stories.length} (${touched.length} créés ou enrichis)`);
@@ -244,7 +245,7 @@ if (llm && candidates.length) {
   if (r.merged) {
     stories = r.stories;
     for (const st of stories) refreshTx(st, sourceMap, raw);
-    rankStories(stories, sourceMap, now.getTime());
+    rankStories(stories, sourceMap, now.getTime(), DECAY);
     log(`  sujets fusionnés entre langues : ${r.merged}`);
   }
 }

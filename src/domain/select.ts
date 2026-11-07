@@ -36,8 +36,27 @@ export function searchText(st: Story, lang: Lang): string {
   return s;
 }
 
-export function followedSectors(all: string[], prefs: Pick<Prefs, 'followed'>): string[] {
-  return prefs.followed ? all.filter((id) => prefs.followed!.includes(id)) : all;
+/** Tous les secteurs dans l'ordre choisi par l'utilisateur ; ceux qu'il n'a pas encore placés suivent, dans l'ordre d'origine. */
+export function orderedSectors(all: string[], prefs: Partial<Pick<Prefs, 'order'>>): string[] {
+  const order = prefs.order ?? [];
+  if (!order.length) return all;
+  const known = new Set(all);
+  const placed = order.filter((id, i) => known.has(id) && order.indexOf(id) === i);
+  const seen = new Set(placed);
+  return [...placed, ...all.filter((id) => !seen.has(id))];
+}
+
+/** Replace, dans la liste complète, les secteurs affichés dans leur nouvel ordre ; les autres (masqués) gardent leur place. */
+export function applyVisibleOrder(full: string[], visibleNewOrder: string[]): string[] {
+  const shown = new Set(visibleNewOrder);
+  const queue = visibleNewOrder.filter((id) => full.includes(id));
+  return full.map((id) => (shown.has(id) ? queue.shift() ?? id : id));
+}
+
+/** Secteurs suivis, dans l'ordre de l'utilisateur. */
+export function followedSectors(all: string[], prefs: Pick<Prefs, 'followed'> & Partial<Pick<Prefs, 'order'>>): string[] {
+  const list = orderedSectors(all, prefs);
+  return prefs.followed ? list.filter((id) => prefs.followed!.includes(id)) : list;
 }
 
 export const inSector = (st: Story, id: string): boolean => st.sectors.includes(id);

@@ -52,7 +52,7 @@ export function StorySheet({ id }: { id: string }) {
   const text = storyText(st, lang);
   const by = textBy(st, lang);
   const tx = txOf(st, lang);
-  const origLang = langName(st.lang === 'en' ? 'en' : 'fr', lang);
+  const origLang = langName(st.lang, lang);
   const opinion = st.sectors.some((s) => sectorById(s)?.opinion);
   const spread = opinion ? storySpread(st, f.sources) : null;
   const labelled = spread ? spread.left + spread.center + spread.right : 0;
@@ -98,7 +98,7 @@ export function StorySheet({ id }: { id: string }) {
                     <span className="t-strong src-name">{name(it.s)}<LeanTag lean={lean} /></span>
                     {it.l === lang
                       ? it.t !== title && <span className="t-caption c-neutral">{it.t}</span>
-                      : <span className="t-caption c-moderate">{t('story.articleIn', { lang: langName(it.l === 'en' ? 'en' : 'fr', lang) })}</span>}
+                      : <span className="t-caption c-moderate">{t('story.articleIn', { lang: langName(it.l, lang) })}</span>}
                     <span className="t-caption c-moderate">{relTime(it.d, lang)}</span>
                   </span>
                   <Icon name="external" size={18} />

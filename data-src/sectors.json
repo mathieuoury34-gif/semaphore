@@ -21,5 +21,13 @@
     "en": { "name": "Field Watch", "short": "Field", "description": "Fluid mechanics, aeroacoustics, propulsion, cryogenics, numerical simulation." } },
   { "id": "emploi",        "name": "Emploi",           "short": "Emploi",     "icon": "briefcase", "description": "Offres d'emploi et de stage : spatial, aéronautique, simulation, recherche (Munich, France, Europe).", "summaries": 30,
     "retentionDays": 30, "freshHours": 720,
-    "en": { "name": "Jobs", "short": "Jobs", "description": "Job and internship openings: space, aerospace, simulation, research (Munich, France, Europe)." } }
+    "en": { "name": "Jobs", "short": "Jobs", "description": "Job and internship openings: space, aerospace, simulation, research (Munich, France, Europe)." } },
+  {"id": "munich", "name": "Munich", "short": "Munich", "icon": "building", "description": "Toute l'actualité locale de Munich et de son agglomération (Unterhaching, Garching…) : vie quotidienne, transports, justice, culture, économie, sport.", "summaries": 16,
+    "en": {"name": "Munich", "short": "Munich", "description": "All the local news of Munich and its surroundings (Unterhaching, Garching…): daily life, transport, courts, culture, economy, sport."} },
+  {"id": "herault", "name": "Hérault", "short": "Hérault", "icon": "sun", "description": "Toute l'actualité locale de l'Hérault : Montpellier, Béziers, Sète, Lunel… vie quotidienne, météo, société, culture, économie, sport.", "summaries": 14,
+    "en": {"name": "Hérault", "short": "Hérault", "description": "All the local news of the Hérault department: Montpellier, Béziers, Sète, Lunel… daily life, weather, society, culture, economy, sport."} },
+  {"id": "vendargues", "name": "Vendargues", "short": "Vendargues", "icon": "pin", "description": "Vendargues et alentours : mairie, vie locale, travaux, sécurité, événements, intercommunalité.", "summaries": 8, "retentionDays": 30, "freshHours": 720, "decayHours": 120,
+    "en": {"name": "Vendargues", "short": "Vendargues", "description": "Vendargues and surroundings: town hall, local life, roadworks, safety, events, the metropolitan area."} },
+  {"id": "positif", "name": "Infos positives", "short": "Positif", "icon": "heart", "description": "Des histoires qui font du bien : entraide, solidarité, belles découvertes, avancées, gestes d'humanité.", "summaries": 14, "retentionDays": 14, "freshHours": 168, "decayHours": 60,
+    "en": {"name": "Good News", "short": "Good news", "description": "Stories that feel good: mutual aid, solidarity, lovely discoveries, progress, acts of humanity."} }
 ]

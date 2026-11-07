@@ -64,14 +64,14 @@ test('flux RSS d’offres (Teamtailor) : lu comme un flux, un sujet par offre', 
   assert.equal((items[0] as any).noCluster, true);
 });
 
-test('configuration : chaque source a un secteur connu, une langue fr/en, un identifiant unique ; les médias à ligne éditoriale ont un repère valide', () => {
+test('configuration : chaque source a un secteur connu, une langue fr/en/de, un identifiant unique ; les médias à ligne éditoriale ont un repère valide', () => {
   const sectors = new Set(loadSectors().map((s: any) => s.id));
   const sources = loadSources();
   assert.equal(new Set(sources.map((s: any) => s.id)).size, sources.length, 'identifiants uniques');
   const leans = new Set(['left', 'center-left', 'center', 'center-right', 'right']);
   for (const s of sources as any[]) {
     assert.ok(s.url, s.id + ' : adresse');
-    assert.ok(['fr', 'en'].includes(s.lang), s.id + ' : langue');
+    assert.ok(['fr', 'en', 'de'].includes(s.lang), s.id + ' : langue');
     assert.ok(s.sectors.length > 0 && s.sectors.every((x: string) => sectors.has(x)), s.id + ' : secteurs');
     if (s.lean) assert.ok(leans.has(s.lean), s.id + ' : repère');
   }

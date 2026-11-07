@@ -62,7 +62,9 @@ export function BriefScreen() {
   }
   const feed = f.feed;
 
-  const fromDigest = localBullets((f.digest?.brief ?? []).filter((b) => followed.includes(b.sector)), undefined, v, f.byId);
+  // « L'essentiel » suit l'ordre des secteurs choisi par l'utilisateur (le tri est stable : à secteur égal, l'ordre du robot est conservé)
+  const fromDigest = localBullets((f.digest?.brief ?? []).filter((b) => followed.includes(b.sector)), undefined, v, f.byId)
+    .sort((a, b) => followed.indexOf(a.sector!) - followed.indexOf(b.sector!));
   const briefRows: { b: Row; sector: string }[] = fromDigest.length
     ? fromDigest.map((b) => ({ b, sector: b.sector! }))
     : followed.slice(0, 8).flatMap((id) => {

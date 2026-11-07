@@ -1,11 +1,12 @@
 // « Secteurs » : grille des secteurs, recherche, puis flux d'un secteur.
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { Icon } from '../ui/icons';
 import { AppHeader, DataBanner, Empty, Segmented, SubHeader } from '../ui/kit';
 import { navigate } from '../ui/router';
 import { NewsRow, PagedList, SECTORS, SECTOR_IDS, sectorById, sectorStyle, sectorText } from '../ui/news';
 import { useFeed } from '../data/feed';
-import { markAllRead, useUserState } from '../data/store';
+import { markAllRead, setSectorOrder, useUserState } from '../data/store';
+import { useLongPressReorder } from '../ui/reorder';
 import { followedSectors, newCount, searchAll, sectorStories, viewOf, type SortMode } from '../domain/select';
 import { useT } from '../i18n';
 
@@ -15,6 +16,8 @@ export function SectorsScreen() {
   const { t, lang } = useT();
   const [q, setQ] = useState('');
   const followed = followedSectors(SECTOR_IDS, user.prefs);
+  const grid = useRef<HTMLDivElement>(null);
+  useLongPressReorder(grid, { ids: followed, onCommit: (ids) => setSectorOrder(ids, SECTOR_IDS) });
   const v = useMemo(() => viewOf(user.prefs), [user.prefs]);
   const results = useMemo(() => (f.feed && q.trim().length >= 2 ? searchAll(f.feed, q, followed, v) : null), [f.feed, q, followed, v]);
 
@@ -34,13 +37,15 @@ export function SectorsScreen() {
             <PagedList items={results} render={(st) => <NewsRow key={st.id} st={st} />} empty={<Empty icon="search"  title={t('sectors.noResultTitle')} text={t('sectors.noResultText')} />} />
           </>
         ) : (
-          <div className="tiles">
+          <>
+          <p className="t-caption c-moderate hold-hint">{t('sectors.hold')}</p>
+          <div className="tiles" ref={grid}>
             {followed.map((id) => {
               const s = sectorById(id)!;
               const n = f.feed ? newCount(f.feed, id, user.read, v) : 0;
               const tx = sectorText(s, lang);
               return (
-                <button key={id} type="button" className="sector-tile" style={sectorStyle(id)} onClick={() => navigate('/secteurs/' + id)}>
+                <button key={id} type="button" className="sector-tile" data-rid={id} style={sectorStyle(id)} onClick={() => navigate('/secteurs/' + id)}>
                   <span className="tile-icon"><Icon name={s.icon} size={24} /></span>
                   <span className="tile-name">{tx.name}</span>
                   <span className="tile-desc">{tx.description}</span>
@@ -49,6 +54,7 @@ export function SectorsScreen() {
               );
             })}
           </div>
+          </>
         )}
       </div>
     </div>

@@ -11,12 +11,27 @@ const NAMED = {
 
 export function decodeEntities(s) {
   return String(s ?? '')
+    .replace(/and#(\d{2,5});/g, (m, d) => safeChar(parseInt(d, 10), m)) // « and#039; » : flux dont l'esperluette a été remplacée par « and »
     .replace(/&#x([0-9a-f]+);/gi, (m, h) => safeChar(parseInt(h, 16), m))
     .replace(/&#(\d+);/g, (m, d) => safeChar(parseInt(d, 10), m))
     .replace(/&([a-zA-Z][a-zA-Z0-9]*);/g, (m, n) => (n in NAMED ? NAMED[n] : m));
 }
 function safeChar(cp, fallback) {
   try { return cp > 0 && cp < 0x110000 ? String.fromCodePoint(cp) : fallback; } catch { return fallback; }
+}
+
+// Octets Windows-1252 hors Latin-1 : permet de défaire un UTF-8 lu à tort en Windows-1252 (« â€™ » → « ’ »).
+const CP1252 = { 0x20ac: 0x80, 0x201a: 0x82, 0x192: 0x83, 0x201e: 0x84, 0x2026: 0x85, 0x2020: 0x86, 0x2021: 0x87, 0x2c6: 0x88, 0x2030: 0x89, 0x160: 0x8a, 0x2039: 0x8b, 0x152: 0x8c, 0x17d: 0x8e, 0x2018: 0x91, 0x2019: 0x92, 0x201c: 0x93, 0x201d: 0x94, 0x2022: 0x95, 0x2013: 0x96, 0x2014: 0x97, 0x2dc: 0x98, 0x2122: 0x99, 0x161: 0x9a, 0x203a: 0x9b, 0x153: 0x9c, 0x17e: 0x9e, 0x178: 0x9f };
+export function fixMojibake(s) {
+  if (!/[ÃÂâ][\u0080-\u00bf\u0152-\u2122€‚„…†‡ˆ‰‹‘’“”•–—˜™›]/.test(s)) return s;
+  const bytes = [];
+  for (const ch of s) {
+    const c = ch.codePointAt(0);
+    if (c < 0x100) bytes.push(c);
+    else if (CP1252[c]) bytes.push(CP1252[c]);
+    else return s; // vrai caractère hors Windows-1252 : le texte n'est pas du texte mal lu
+  }
+  try { return new TextDecoder('utf-8', { fatal: true }).decode(Uint8Array.from(bytes)); } catch { return s; }
 }
 
 /** HTML (souvent échappé, parfois double) → texte brut sur une ligne. */
@@ -30,7 +45,7 @@ export function stripHtml(input) {
     .replace(/<\s*(br|\/p|\/div|\/li|\/h[1-6]|\/tr)\b[^>]*>/gi, ' ')
     .replace(/<[^>]+>/g, ' ');
   s = decodeEntities(s);
-  return s.replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, ' ').replace(/\s+/g, ' ').trim();
+  return fixMojibake(s.replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, ' ').replace(/\s+/g, ' ').trim());
 }
 
 /** Minuscules, sans accents, ponctuation → espaces. */

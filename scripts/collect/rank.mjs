@@ -1,7 +1,7 @@
 // Classement des sujets : fraîcheur, poids des sources, nombre de sources distinctes qui en parlent.
-export function scoreStory(st, sources, now = Date.now()) {
+export function scoreStory(st, sources, now = Date.now(), decay = {}) {
   const ageH = Math.max(0, (now - Date.parse(st.date)) / 3600000);
-  const fresh = Math.exp(-ageH / (st.sectors?.[0] === 'emploi' ? 240 : 30)); // demi-vie ≈ 21 h ; une offre d'emploi reste valable des semaines (≈ 7 jours)
+  const fresh = Math.exp(-ageH / (decay[st.sectors?.[0]] ?? (st.sectors?.[0] === 'emploi' ? 240 : 30))); // demi-vie ≈ 21 h ; une offre d'emploi reste valable des semaines (≈ 7 jours) ; sectors.json › decayHours règle les secteurs lents (Vendargues, Infos positives)
   const ws = st.items.map((i) => (sources.get(i.s)?.weight ?? 1) + (sources.get(i.s)?.kind === 'institution' ? 0.5 : 0));
   const distinct = new Set(st.items.map((i) => i.s)).size;
   const base = Math.max(...ws);
@@ -11,8 +11,8 @@ export function scoreStory(st, sources, now = Date.now()) {
   return Math.round((base + coverage + kind) * rel * fresh * 100) / 100;
 }
 
-export function rankStories(stories, sources, now = Date.now()) {
-  for (const st of stories) st.score = scoreStory(st, sources, now);
+export function rankStories(stories, sources, now = Date.now(), decay = {}) {
+  for (const st of stories) st.score = scoreStory(st, sources, now, decay);
   return stories;
 }
 

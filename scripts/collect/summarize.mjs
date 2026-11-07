@@ -104,7 +104,7 @@ const SYSTEM_DIGEST =
 
 const SYSTEM_BRIEF =
   "Tu rédiges le « brief du jour » d'une revue de presse. On te donne les puces des secteurs. " +
-  "Retiens les 6 à 8 faits les plus importants, tous secteurs confondus (au plus 2 par secteur), chacun en 170 caractères maximum, style télégraphique et factuel, " +
+  "Retiens les 8 à 10 faits les plus importants, tous secteurs confondus (au plus 2 par secteur ; un fait au moins pour « positif » si ce secteur est présent, car il est destiné à réconforter), chacun en 170 caractères maximum, style télégraphique et factuel, " +
   "DANS LES DEUX LANGUES (« fr » et « en »). Indique pour chacun l'identifiant du secteur et le numéro de la puce (« ref »). " +
   'Réponds UNIQUEMENT en JSON : {"brief":[{"secteur":"<id>","fr":"…","en":"…","ref":1}]}.';
 
@@ -164,7 +164,7 @@ export async function llmBrief(llm, digests, names) {
     if (!digests[sector] || (!t.fr && !t.en)) continue;
     const src = digests[sector][Number(b.ref) - 1];
     out.push({ sector, t, ids: src?.ids ?? [] });
-    if (out.length >= 8) break;
+    if (out.length >= 10) break;
   }
   return out.length >= 3 ? out : null;
 }
@@ -182,7 +182,7 @@ export function plainDigest(stories, n = 3) {
   return out;
 }
 
-export function plainBrief(sectorOrder, digests, max = 8) {
+export function plainBrief(sectorOrder, digests, max = 10) {
   const out = [];
   const used = new Set();
   for (const id of sectorOrder) {

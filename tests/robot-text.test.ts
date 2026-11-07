@@ -48,3 +48,10 @@ test('detectLang', () => {
   assert.equal(detectLang('Le gouvernement a annoncé que les mesures sont prévues pour la semaine prochaine dans le pays'), 'fr');
   assert.equal(detectLang('The government said that the measures are planned for next week in the country and that it has'), 'en');
 });
+
+test('stripHtml : « and#039; » (esperluette remplacée) et UTF-8 lu en Windows-1252', () => {
+  assert.equal(stripHtml('Sheand#039;s Starring'), "She's Starring");
+  assert.equal(stripHtml('Toddler\u00e2\u20ac\u2122s Groceries'), 'Toddler’s Groceries');
+  assert.equal(stripHtml('Café déjà vu — très bien'), 'Café déjà vu — très bien'); // texte correct : intact
+  assert.equal(stripHtml('Ã©tÃ©'), 'été');
+});

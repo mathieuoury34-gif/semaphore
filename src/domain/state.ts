@@ -9,7 +9,7 @@ const READ_KEEP_MS = 14 * 86400000;
 const TOMB_KEEP_MS = 90 * 86400000;
 
 export function emptyState(): UserState {
-  return { v: 1, favorites: {}, read: {}, prefs: { followed: null, keywords: [], lang: 'fr', off: {}, at: '' }, updatedAt: '' };
+  return { v: 1, favorites: {}, read: {}, prefs: { followed: null, order: [], keywords: [], lang: 'fr', off: {}, at: '' }, updatedAt: '' };
 }
 
 /** Stringify avec clés triées : deux états identiques donnent le même texte. */
@@ -66,6 +66,7 @@ export function sanitize(raw: unknown): UserState {
   if (r.prefs && typeof r.prefs === 'object') {
     e.prefs = {
       followed: Array.isArray(r.prefs.followed) ? r.prefs.followed.filter((x) => typeof x === 'string') : null,
+      order: Array.isArray(r.prefs.order) ? [...new Set(r.prefs.order.filter((x) => typeof x === 'string'))].slice(0, 100) : [],
       keywords: Array.isArray(r.prefs.keywords) ? r.prefs.keywords.filter((x) => typeof x === 'string').slice(0, 30) : [],
       lang: r.prefs.lang === 'en' ? 'en' : 'fr',
       off: sanitizeOff(r.prefs.off),

@@ -36,8 +36,8 @@ test('fusion : un retrait plus récent l\'emporte, un ajout plus récent aussi',
 });
 
 test('fusion : commutative et idempotente', () => {
-  const a: UserState = { ...withFav(emptyState(), favFromStory(story('a'), () => 'S', iso(5))), read: { x: iso(3), y: iso(9) }, prefs: { followed: ['espace'], keywords: ['ariane'], lang: 'fr', off: {}, at: iso(8) }, updatedAt: iso(2) };
-  const b: UserState = { ...withFav(emptyState(), favFromStory(story('b'), () => 'S', iso(4))), read: { y: iso(2), z: iso(6) }, prefs: { followed: null, keywords: [], lang: 'en', off: { climat: ['x'] }, at: iso(1) }, updatedAt: iso(1) };
+  const a: UserState = { ...withFav(emptyState(), favFromStory(story('a'), () => 'S', iso(5))), read: { x: iso(3), y: iso(9) }, prefs: { followed: ['espace'], order: ['sport', 'espace'], keywords: ['ariane'], lang: 'fr', off: {}, at: iso(8) }, updatedAt: iso(2) };
+  const b: UserState = { ...withFav(emptyState(), favFromStory(story('b'), () => 'S', iso(4))), read: { y: iso(2), z: iso(6) }, prefs: { followed: null, order: [], keywords: [], lang: 'en', off: { climat: ['x'] }, at: iso(1) }, updatedAt: iso(1) };
   const ab = mergeState(a, b, NOW), ba = mergeState(b, a, NOW);
   assert.equal(stable(ab), stable(ba));
   assert.equal(stable(mergeState(ab, ab, NOW)), stable(ab));

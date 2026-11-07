@@ -129,6 +129,10 @@
   --sector-metier: #6C6C00;
   --sector-sport: #7A1F28;
   --sector-emploi: #795548;
+  --sector-munich: #236789;
+  --sector-herault: #B5541B;
+  --sector-vendargues: #730F43;
+  --sector-positif: #2A2BB6;
   --lean-left: #9A6B2F;
   --lean-center: #78909C;
   --lean-right: #00897B;
@@ -272,6 +276,10 @@
   --sector-metier: #979700;
   --sector-sport: #E0707C;
   --sector-emploi: #BCAAA4;
+  --sector-munich: #6DBAE0;
+  --sector-herault: #E8935B;
+  --sector-vendargues: #FC98CB;
+  --sector-positif: #9899F6;
   --lean-left: #C9A06B;
   --lean-center: #90A4AE;
   --lean-right: #26A69A;

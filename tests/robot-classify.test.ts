@@ -114,3 +114,19 @@ test('reclassement d’un sujet déjà publié : Europe disparaît, le sport qui
   reclassifyStory(old, sm, rules, SECTOR_IDS);
   assert.deepEqual(old.sectors, ['economie']);
 });
+
+test('secteurs locaux : Munich, Hérault, Vendargues', () => {
+  assert.ok(top('Tollwood Winterfestival: Aufbau auf der Theresienwiese in München läuft').includes('munich'));
+  assert.ok(top('Oktoberfest 2026 : bilan de la fête de la bière à Munich').includes('munich'));
+  assert.ok(top('Cinq blessés dans un accident en pleine nuit à Béziers').includes('herault'));
+  assert.ok(top('Montpellier : la résidence remporte un prix européen').includes('herault'));
+  assert.ok(top('Le ferry part de Sète vers le Maroc').includes('herault') || top('Escale à Sète pour le navire').includes('herault'));
+  assert.ok(top('Halloween a investi Vendargues !').includes('vendargues'));
+});
+
+test('secteurs locaux : le football et les accords de Munich ne comptent pas', () => {
+  assert.ok(!top('Le Bayern Munich s’impose en Bundesliga').includes('munich'));
+  assert.ok(!top('FC Bayern München gewinnt in der Bundesliga').includes('munich'));
+  assert.ok(!top('Les accords de Munich de 1938 revisités par un historien').includes('munich'));
+  assert.ok(!top('Un parfum « Sète » vendu en pharmacie').includes('herault'));
+});

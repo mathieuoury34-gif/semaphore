@@ -76,6 +76,7 @@ export interface Fav {
 }
 export interface Prefs {
   followed: string[] | null;               // null : tous les secteurs
+  order: string[];                         // ordre choisi des secteurs (ceux qui n'y figurent pas suivent, dans l'ordre d'origine)
   keywords: string[];
   lang: Lang;                              // langue de l'application et des contenus
   off: Record<string, string[]>;           // secteur → sources masquées dans ce secteur

@@ -2,14 +2,14 @@
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import { Icon } from '../ui/icons';
 import { AppHeader, Segmented, Switch, showToast } from '../ui/kit';
-import { LeanTag, SECTORS, SECTOR_IDS, sectorText } from '../ui/news';
+import { LeanTag, SECTORS, SECTOR_IDS, sectorById, sectorText } from '../ui/news';
 import { loadStatus, useFeed } from '../data/feed';
 import { resetRead, setFollowed, setLang, setSectorOff, useUserState } from '../data/store';
 import { signIn, signOut, syncNow, useSync } from '../data/sync';
 import { onThemeChange, setThemePref, themePref, type ThemePref } from '../theme';
 import { dateNumeric, dateTime } from '../domain/format';
 import { LEANS, type Lang, type Sector, type SourceInfo, type Status } from '../domain/types';
-import { followedSectors, leanSpread, sourcesOfSector } from '../domain/select';
+import { followedSectors, leanSpread, orderedSectors, sourcesOfSector } from '../domain/select';
 import { useT, type Key } from '../i18n';
 import { getNotifPrefs, notifAvailable, notifOpenBattery, notifOpenSettings, notifRequestPermission, saveNotifPrefs, useNotifStatus } from '../native/notifications';
 import { apkPageUrl, apkUrl, native } from '../native/bridge';
@@ -104,7 +104,7 @@ function FollowedSectors() {
     <Section id="s-sectors" title={t('set.followed')}>
       <p className="t-caption c-moderate">{t('followed.help')}</p>
       <ul className="divided">
-        {SECTORS.map((s) => (
+        {orderedSectors(SECTOR_IDS, user.prefs).map((id) => sectorById(id)!).map((s) => (
           <li key={s.id} className="setting-row">
             <span className="digest-icon" style={{ ['--sc' as string]: `var(--sector-${s.id})` }}><Icon name={s.icon} size={18} /></span>
             <span className="grow" id={'sec-' + s.id}>{sectorText(s, lang).name}</span>

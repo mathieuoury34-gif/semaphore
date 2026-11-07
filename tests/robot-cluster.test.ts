@@ -74,3 +74,12 @@ test('rankStories : une offre d’emploi de 5 jours compte encore ; en France el
   assert.ok(fr.score > 0.3, 'une offre de 5 jours garde un score utilisable');
   assert.ok(news.score < 0.1, 'une actualité de 5 jours est devenue sans intérêt');
 });
+
+test('rankStories : la demi-vie propre à un secteur (Vendargues, Infos positives) garde les sujets plus longtemps', () => {
+  const now = Date.parse('2026-10-24T12:00:00Z');
+  const mk = (id: string, sector: string): any => ({ id, sectors: [sector], date: '2026-10-19T12:00:00Z', items: [{ s: 'bfm' }], rel: 1 });
+  const loc = mk('v', 'vendargues'), plain = mk('p', 'politique');
+  rankStories([loc, plain], sources, now, { vendargues: 120 });
+  assert.ok(loc.score > 0.3, 'un sujet local de 5 jours reste visible');
+  assert.ok(loc.score > plain.score * 5);
+});

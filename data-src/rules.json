@@ -815,6 +815,72 @@
         "satellite",
         "exoplanete"
       ]
+    },
+    "munich": {
+      "strong": [
+        "munich",
+        "munchen",
+        "muenchen",
+        "unterhaching",
+        "oberpfaffenhofen",
+        "garching",
+        "oktoberfest",
+        "landkreis munchen",
+        "marienplatz",
+        "baviere",
+        "bavaria",
+        "bayern",
+        "bavarois",
+        "bavarian",
+        "cs:TUM"
+      ],
+      "any": [],
+      "exclude": [
+        "bayern munich",
+        "bayern munchen",
+        "fc bayern",
+        "bayern de munich",
+        "bundesliga",
+        "accord de munich",
+        "accords de munich",
+        "munich agreement",
+        "munich 1938",
+        "re:\\bmunich (fc|city)\\b"
+      ]
+    },
+    "herault": {
+      "strong": [
+        "herault",
+        "montpellier",
+        "beziers",
+        "agde",
+        "cap d agde",
+        "lunel",
+        "frontignan",
+        "lattes",
+        "mauguio",
+        "palavas les flots",
+        "balaruc les bains",
+        "castelnau le lez",
+        "saint jean de vedas",
+        "grabels",
+        "juvignac",
+        "pezenas",
+        "lodeve",
+        "clermont l herault",
+        "la grande motte",
+        "bustram",
+        "re:\\b(a|de|vers|pres de|dans|ville de|port de) sete\\b"
+      ],
+      "any": [],
+      "exclude": []
+    },
+    "vendargues": {
+      "strong": [
+        "vendargues"
+      ],
+      "any": [],
+      "exclude": []
     }
   },
   "_aide_jobs": "Offres d'emploi (sources avec « type » ou « jobs ») : « include » = au moins un de ces termes dans l'intitulé ou le service ; « exclude » = intitulés écartés. Chaque source peut avoir ses propres « include », « exclude » et « locations ».",

@@ -2,6 +2,7 @@
 import { useSyncExternalStore } from 'react';
 import type { Fav, Lang, Story, UserState } from '../domain/types';
 import type { NotifPrefs } from '../domain/notif';
+import { applyVisibleOrder, orderedSectors } from '../domain/select';
 import { emptyState, favFromStory, pruneRead, sanitize, withFav, withoutFav } from '../domain/state';
 
 import { KEY_DEVICE, KEY_STATE } from './keys';
@@ -83,6 +84,14 @@ export function restoreFavorite(f: Fav): void {
 }
 export function setFollowed(followed: string[] | null): void {
   update((s) => ({ ...s, prefs: { ...s.prefs, followed, at: new Date().toISOString() } }));
+}
+/** Enregistre le nouvel ordre des secteurs affichés (`visible`) ; `all` : tous les secteurs connus, dans l'ordre d'origine. */
+export function setSectorOrder(visible: string[], all: string[]): void {
+  update((s) => {
+    const order = applyVisibleOrder(orderedSectors(all, s.prefs), visible);
+    if (order.join() === orderedSectors(all, s.prefs).join()) return s;
+    return { ...s, prefs: { ...s.prefs, order, at: new Date().toISOString() } };
+  });
 }
 export function setKeywords(keywords: string[]): void {
   update((s) => ({ ...s, prefs: { ...s.prefs, keywords, at: new Date().toISOString() } }));
